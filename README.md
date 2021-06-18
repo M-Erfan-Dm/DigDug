@@ -1,3 +1,5 @@
+# DigDug Game
+
 # Project Description
 <p> Advanced Programming Final Project <br>
     Instructors: Dr. Mehdi Esnaashari, Mehdi Zamanian <br>

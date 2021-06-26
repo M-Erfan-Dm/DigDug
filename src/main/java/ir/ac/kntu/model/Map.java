@@ -47,8 +47,11 @@ public class Map {
         }
         switch (code) {
             case GlobalConstants.DIGGER:
-                digger = new Digger(this, x, y);
-                return digger;
+                if (digger==null){
+                    digger = new Digger(this, x, y);
+                    return digger;
+                }
+                return null;
             case GlobalConstants.POOKA:
                 return new Pooka(this,x,y);
             case GlobalConstants.FYGAR:

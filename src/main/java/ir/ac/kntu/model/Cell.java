@@ -39,17 +39,18 @@ public class Cell {
     public <T extends GameObject> T getObjectByType(Class<T> gameObjectType) {
         GameObject gameObject = gameObjects.stream().filter(object ->
                 object.getClass().equals(gameObjectType)).findFirst().orElse(null);
-        if (gameObject==null){
+        if (gameObject == null) {
             return null;
         }
         return gameObjectType.cast(gameObject);
     }
 
-    public List<GameObject> getGameObjects(){
+    public List<GameObject> getGameObjects() {
         return new ArrayList<>(gameObjects);
     }
 
-    public boolean isEmpty(){
-        return gameObjects.isEmpty();
+    public boolean isEmpty() {
+        return gameObjects.isEmpty() || (getObjectByType(Soil.class) == null
+                && getObjectByType(Stone.class) == null);
     }
 }

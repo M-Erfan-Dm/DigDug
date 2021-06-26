@@ -10,6 +10,8 @@ public class Map {
 
     private Cell[][] cells;
 
+    private Digger digger;
+
     public Map(int width, int height, int[][] rawMap) {
         this.width = width;
         this.height = height;
@@ -18,6 +20,10 @@ public class Map {
 
     public double getPosition(int pos){
         return pos * Cell.CELL_SIZE;
+    }
+
+    public Digger getDigger() {
+        return digger;
     }
 
     private void createAllGameObjects(int[][] rawMap) {
@@ -41,7 +47,8 @@ public class Map {
         }
         switch (code) {
             case GlobalConstants.DIGGER:
-                return new Digger(this,x,y);
+                digger = new Digger(this, x, y);
+                return digger;
             case GlobalConstants.POOKA:
                 return new Pooka(this,x,y);
             case GlobalConstants.FYGAR:

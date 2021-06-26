@@ -41,5 +41,28 @@ public abstract class GameObject {
         getView().setLayoutY(map.getPosition(y));
     }
 
+    public void changeViewDirection(Direction direction){
+        switch (direction){
+            case UP:
+                getView().setScaleX(-1);
+                getView().setRotate(90);
+                break;
+            case DOWN:
+                getView().setRotate(90);
+                getView().setScaleX(1);
+                break;
+            case RIGHT:
+                getView().setRotate(0);
+                getView().setScaleX(1);
+                break;
+            case LEFT:
+                getView().setScaleX(-1);
+                getView().setRotate(0);
+                break;
+            default:
+                break;
+        }
+    }
+
     abstract public Node getView();
 }

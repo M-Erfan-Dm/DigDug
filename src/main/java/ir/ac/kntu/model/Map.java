@@ -26,6 +26,14 @@ public class Map {
         return digger;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     private void createAllGameObjects(int[][] rawMap) {
         cells = new Cell[height][width];
         for (int i = 0; i < height; i++) {
@@ -72,7 +80,7 @@ public class Map {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Cell cell = cells[i][j];
-                cell.getGameObjects().forEach(gameObject -> pane.getChildren().add(gameObject.getView()));
+                cell.getGameObjects().forEach(gameObject -> pane.getChildren().add(gameObject.getImageView()));
             }
         }
     }

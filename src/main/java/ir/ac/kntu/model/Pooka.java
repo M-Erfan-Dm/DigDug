@@ -1,14 +1,10 @@
 package ir.ac.kntu.model;
 
-import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 
 public class Pooka extends GameObject {
     public Pooka(Map map, int x, int y) {
         super(map, x, y);
     }
 
-    @Override
-    public Node getView() {
-        return null;
-    }
 }

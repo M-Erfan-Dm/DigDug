@@ -1,6 +1,9 @@
 package ir.ac.kntu.model;
 
-import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
+import java.io.File;
 
 public abstract class GameObject {
 
@@ -10,10 +13,15 @@ public abstract class GameObject {
 
     private int y;
 
+    private ImageView imageView;
+
+    private String imagePath = null;
+
     protected GameObject(Map map, int x, int y) {
         this.map = map;
         this.x = x;
         this.y = y;
+        imageView = new ImageView();
     }
 
     public int getX() {
@@ -36,29 +44,41 @@ public abstract class GameObject {
         return map;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
     public void updateRealPos(){
-        getView().setLayoutX(map.getPosition(x));
-        getView().setLayoutY(map.getPosition(y));
+        imageView.setLayoutX(map.getPosition(x));
+        imageView.setLayoutY(map.getPosition(y));
     }
 
     public void changeViewDirection(Direction direction){
         if (direction!=null) {
             switch (direction) {
                 case UP:
-                    getView().setScaleX(-1);
-                    getView().setRotate(90);
+                    imageView.setScaleX(-1);
+                    imageView.setRotate(90);
                     break;
                 case DOWN:
-                    getView().setRotate(90);
-                    getView().setScaleX(1);
+                    imageView.setRotate(90);
+                    imageView.setScaleX(1);
                     break;
                 case RIGHT:
-                    getView().setRotate(0);
-                    getView().setScaleX(1);
+                    imageView.setRotate(0);
+                    imageView.setScaleX(1);
                     break;
                 case LEFT:
-                    getView().setScaleX(-1);
-                    getView().setRotate(0);
+                    imageView.setScaleX(-1);
+                    imageView.setRotate(0);
                     break;
                 default:
                     break;
@@ -66,5 +86,9 @@ public abstract class GameObject {
         }
     }
 
-    abstract public Node getView();
+    public void setImage(){
+        imageView.setImage(new Image(new File(imagePath).toURI().toString(),
+                Cell.CELL_SIZE,Cell.CELL_SIZE,false,false));
+    }
+
 }

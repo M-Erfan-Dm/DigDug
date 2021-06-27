@@ -9,35 +9,35 @@ public abstract class GameObject {
 
     private final Map map;
 
-    private int x;
+    private int gridX;
 
-    private int y;
+    private int gridY;
 
-    private ImageView imageView;
+    private final ImageView imageView;
 
     private String imagePath = null;
 
-    protected GameObject(Map map, int x, int y) {
+    protected GameObject(Map map, int gridX, int gridY) {
         this.map = map;
-        this.x = x;
-        this.y = y;
+        this.gridX = gridX;
+        this.gridY = gridY;
         imageView = new ImageView();
     }
 
-    public int getX() {
-        return x;
+    public int getGridX() {
+        return gridX;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public void setGridX(int gridX) {
+        this.gridX = gridX;
     }
 
-    public int getY() {
-        return y;
+    public int getGridY() {
+        return gridY;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public void setGridY(int gridY) {
+        this.gridY = gridY;
     }
 
     public Map getMap() {
@@ -57,8 +57,8 @@ public abstract class GameObject {
     }
 
     public void updateRealPos(){
-        imageView.setLayoutX(map.getPosition(x));
-        imageView.setLayoutY(map.getPosition(y));
+        imageView.setLayoutX(map.getPosition(gridX));
+        imageView.setLayoutY(map.getPosition(gridY));
     }
 
     public void changeViewDirection(Direction direction){

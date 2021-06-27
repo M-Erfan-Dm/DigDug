@@ -2,6 +2,7 @@ package ir.ac.kntu.model;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 
 import java.io.File;
 
@@ -52,5 +53,10 @@ public class Soil extends GameObject {
             return code;
         }
         return GlobalConstants.SOIL_1;
+    }
+
+    public void destroy(Cell cell){
+        cell.remove(this);
+        getImageView().setVisible(false);
     }
 }

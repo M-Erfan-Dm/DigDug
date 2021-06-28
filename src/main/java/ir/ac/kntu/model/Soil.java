@@ -29,22 +29,20 @@ public class Soil extends GameObject {
     private void updateImageByType() {
         switch (type) {
             case GlobalConstants.SOIL_1:
-                setImagePath("src/main/resources/assets/soil1.png");
+                setImage("src/main/resources/assets/soil1.png");
                 break;
             case GlobalConstants.SOIL_2:
-                setImagePath("src/main/resources/assets/soil2.png");
+                setImage("src/main/resources/assets/soil2.png");
                 break;
             case GlobalConstants.SOIL_3:
-                setImagePath("src/main/resources/assets/soil3.png");
+                setImage("src/main/resources/assets/soil3.png");
                 break;
             case GlobalConstants.SOIL_4:
-                setImagePath("src/main/resources/assets/soil4.png");
+                setImage("src/main/resources/assets/soil4.png");
                 break;
             default:
+                setImage("src/main/resources/assets/soil1.png");
                 break;
-        }
-        if (getImagePath() != null) {
-            setImage();
         }
     }
 

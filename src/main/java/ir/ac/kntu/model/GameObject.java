@@ -17,7 +17,7 @@ public abstract class GameObject {
 
     private String imagePath = null;
 
-    protected GameObject(Map map, int gridX, int gridY) {
+    public GameObject(Map map, int gridX, int gridY) {
         this.map = map;
         this.gridX = gridX;
         this.gridY = gridY;
@@ -46,10 +46,6 @@ public abstract class GameObject {
 
     public String getImagePath() {
         return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
     }
 
     public ImageView getImageView() {
@@ -86,7 +82,8 @@ public abstract class GameObject {
         }
     }
 
-    public void setImage(){
+    public void setImage(String path){
+        imagePath = path;
         imageView.setImage(new Image(new File(imagePath).toURI().toString(),
                 Cell.CELL_SIZE,Cell.CELL_SIZE,false,false));
     }

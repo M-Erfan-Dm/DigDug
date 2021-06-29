@@ -1,5 +1,6 @@
 package ir.ac.kntu.model;
 
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -16,6 +17,8 @@ public abstract class GameObject {
     private final ImageView imageView;
 
     private String imagePath = null;
+
+    private Direction direction;
 
     public GameObject(Map map, int gridX, int gridY) {
         this.map = map;
@@ -52,12 +55,20 @@ public abstract class GameObject {
         return imageView;
     }
 
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
     public void updateRealPos(){
         imageView.setLayoutX(map.getPosition(gridX));
         imageView.setLayoutY(map.getPosition(gridY));
     }
 
-    public void changeViewDirection(Direction direction){
+    public void updateViewDirection(){
         if (direction!=null) {
             switch (direction) {
                 case UP:
@@ -88,4 +99,33 @@ public abstract class GameObject {
                 Cell.CELL_SIZE,Cell.CELL_SIZE,false,false));
     }
 
+    public Point2D getNextPoint(double startX,double startY,double step,Direction direction){
+        if (direction!=null){
+            double x;
+            double y;
+            step = Math.abs(step);
+            switch (direction){
+                case UP:
+                    x = startX;
+                    y = startY - step;
+                    break;
+                case DOWN:
+                    x = startX;
+                    y = startY + step;
+                    break;
+                case RIGHT:
+                    x = startX + step;
+                    y = startY;
+                    break;
+                case LEFT:
+                    x = startX - step;
+                    y = startY;
+                    break;
+                default:
+                    return null;
+            }
+            return new Point2D(x,y);
+        }
+        return null;
+    }
 }

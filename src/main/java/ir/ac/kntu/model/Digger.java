@@ -14,19 +14,26 @@ public class Digger extends GameObject implements Movable {
 
     private static final String DIGGING_IMAGE_2 = "src/main/resources/assets/digger_digging2.png";
 
+    private static final String SHOOTING_IMAGE = "src/main/resources/assets/digger_shooting.png";
+
     private static final double NORMAL_VELOCITY_MILLISECOND = 39;
 
     private double velocityMilliSecond = NORMAL_VELOCITY_MILLISECOND;
 
     private boolean canMove = true;
 
-    public Digger(Map map, int x, int y) {
+    private final Gun gun;
+
+    public Digger(Map map, int x, int y, Gun gun) {
         super(map, x, y);
+        this.gun = gun;
         updateRealPos();
-        setImagePath(SIMPLE_IMAGE_1);
-        setImage();
+        setImage(SIMPLE_IMAGE_1);
     }
 
+    public Gun getGun() {
+        return gun;
+    }
 
     @Override
     public void move(int gridX, int gridY) {
@@ -45,28 +52,29 @@ public class Digger extends GameObject implements Movable {
     public void attachKeyboardHandlers(Scene scene) {
         scene.setOnKeyPressed(keyEvent -> {
             if (canMove) {
-                Direction direction = null;
                 switch (keyEvent.getCode()) {
                     case UP:
-                        direction = Direction.UP;
+                        setDirection(Direction.UP);
                         move(getGridX(), getGridY() - 1);
                         break;
                     case DOWN:
-                        direction = Direction.DOWN;
+                        setDirection(Direction.DOWN);
                         move(getGridX(), getGridY() + 1);
                         break;
                     case LEFT:
-                        direction = Direction.LEFT;
+                        setDirection(Direction.LEFT);
                         move(getGridX() - 1, getGridY());
                         break;
                     case RIGHT:
-                        direction = Direction.RIGHT;
+                        setDirection(Direction.RIGHT);
                         move(getGridX() + 1, getGridY());
                         break;
+                    case SPACE:
+                        shoot();
                     default:
                         break;
                 }
-                changeViewDirection(direction);
+                updateViewDirection();
             }
         });
     }
@@ -82,11 +90,10 @@ public class Digger extends GameObject implements Movable {
         double step = (double) Cell.CELL_SIZE / count;
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(velocityMilliSecond), actionEvent -> {
             if (!getImagePath().equals(SIMPLE_IMAGE_1)) {
-                setImagePath(SIMPLE_IMAGE_1);
+                setImage(SIMPLE_IMAGE_1);
             } else if (!getImagePath().equals(SIMPLE_IMAGE_2)) {
-                setImagePath(SIMPLE_IMAGE_2);
+                setImage(SIMPLE_IMAGE_2);
             }
-            setImage();
             getImageView().setLayoutX(Movable.getNextPositionByStep(getImageView().getLayoutX(), realX, step));
             getImageView().setLayoutY(Movable.getNextPositionByStep(getImageView().getLayoutY(), realY, step));
         }));
@@ -108,11 +115,10 @@ public class Digger extends GameObject implements Movable {
         double step = (double) Cell.CELL_SIZE / count;
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(velocityMilliSecond), actionEvent -> {
             if (!getImagePath().equals(DIGGING_IMAGE_1)) {
-                setImagePath(DIGGING_IMAGE_1);
+                setImage(DIGGING_IMAGE_1);
             } else if (!getImagePath().equals(DIGGING_IMAGE_2)) {
-                setImagePath(DIGGING_IMAGE_2);
+                setImage(DIGGING_IMAGE_2);
             }
-            setImage();
             Cell cell = getMap().getCell(getGridX(), getGridY());
             Soil soil = cell.getObjectByType(Soil.class);
             if (soil != null) {
@@ -125,6 +131,13 @@ public class Digger extends GameObject implements Movable {
         timeline.play();
         canMove = false;
         timeline.setOnFinished(actionEvent -> canMove = true);
+    }
+
+    private void shoot() {
+        canMove = false;
+        setImage(SHOOTING_IMAGE);
+        gun.shoot(getDirection(),getGridX(),getGridY());
+        canMove = true;
     }
 
     private boolean canMoveToNextCell(int x, int y) {

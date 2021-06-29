@@ -56,7 +56,8 @@ public class Map {
         switch (code) {
             case GlobalConstants.DIGGER:
                 if (digger==null){
-                    digger = new Digger(this, x, y);
+                    Gun gun = new Gun(this,x,y);
+                    digger = new Digger(this, x, y, gun);
                     return digger;
                 }
                 return null;
@@ -83,5 +84,6 @@ public class Map {
                 cell.getGameObjects().forEach(gameObject -> pane.getChildren().add(gameObject.getImageView()));
             }
         }
+        pane.getChildren().add(digger.getGun().getImageView());
     }
 }

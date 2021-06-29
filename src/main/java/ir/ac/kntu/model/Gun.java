@@ -18,7 +18,7 @@ public class Gun extends GameObject implements Movable {
 
     private int distanceRange = SIMPLE_DISTANCE_RANGE;
 
-    private OnGunShootingFinish onGunShootingFinish;
+    private OnGunShootingFinishListener onGunShootingFinishListener;
 
     public Gun(Map map, int gridX, int gridY) {
         super(map, gridX, gridY);
@@ -26,15 +26,15 @@ public class Gun extends GameObject implements Movable {
         getImageView().setVisible(false);
     }
 
-    public void setOnGunShootingFinish(OnGunShootingFinish onGunShootingFinish) {
-        this.onGunShootingFinish = onGunShootingFinish;
+    public void setOnGunShootingFinish(OnGunShootingFinishListener onGunShootingFinishListener) {
+        this.onGunShootingFinishListener = onGunShootingFinishListener;
     }
 
     public void shoot(Direction direction, int diggerGridX, int diggerGridY) {
         Point2D nextPoint = getNextPoint(diggerGridX, diggerGridY, 1, direction);
         if (nextPoint == null || isCellBlockedForBullet(((int) nextPoint.getX()), ((int) nextPoint.getY()))) {
-            if (onGunShootingFinish !=null){
-                onGunShootingFinish.onFinish();
+            if (onGunShootingFinishListener !=null){
+                onGunShootingFinishListener.onFinish();
             }
             return;
         }
@@ -70,8 +70,8 @@ public class Gun extends GameObject implements Movable {
             if (canMove.get()) {
                 canMove.set(checkEnemy());
                 canMove.set(canGunMoveToNextCell(counter.get()));
-                if (!canMove.get() && onGunShootingFinish !=null){
-                    onGunShootingFinish.onFinish();
+                if (!canMove.get() && onGunShootingFinishListener !=null){
+                    onGunShootingFinishListener.onFinish();
                 }
                 getImageView().setLayoutX(Movable.getNextPositionByStep(getImageView().getLayoutX(), realX, step));
                 getImageView().setLayoutY(Movable.getNextPositionByStep(getImageView().getLayoutY(), realY, step));
@@ -82,8 +82,8 @@ public class Gun extends GameObject implements Movable {
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
             hideGun();
-            if (onGunShootingFinish !=null){
-                onGunShootingFinish.onFinish();
+            if (onGunShootingFinishListener !=null){
+                onGunShootingFinishListener.onFinish();
             }
         });
     }

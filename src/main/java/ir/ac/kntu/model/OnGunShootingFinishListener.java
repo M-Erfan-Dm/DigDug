@@ -1,6 +1,6 @@
 package ir.ac.kntu.model;
 
 @FunctionalInterface
-public interface OnGunShootingFinish {
+public interface OnGunShootingFinishListener {
     void onFinish();
 }

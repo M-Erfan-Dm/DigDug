@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Cell {
     public static final int CELL_SIZE = 24;
@@ -36,13 +37,14 @@ public class Cell {
         gameObjects.remove(gameObject);
     }
 
-    public <T extends GameObject> T getObjectByType(Class<T> gameObjectType) {
-        GameObject gameObject = gameObjects.stream().filter(object ->
-                object.getClass().equals(gameObjectType)).findFirst().orElse(null);
-        if (gameObject == null) {
-            return null;
-        }
-        return gameObjectType.cast(gameObject);
+    public <T extends GameObject> List<T> getObjectsByType(Class<T> gameObjectType) {
+        return gameObjects.stream().filter(gameObjectType::isInstance)
+                .map(gameObjectType::cast).collect(Collectors.toList());
+    }
+
+    public <T extends GameObject> boolean hasObjectType(Class<T> gameObjectType){
+        List<T> objects = getObjectsByType(gameObjectType);
+        return !objects.isEmpty();
     }
 
     public List<GameObject> getGameObjects() {
@@ -50,7 +52,7 @@ public class Cell {
     }
 
     public boolean isEmpty() {
-        return gameObjects.isEmpty() || (getObjectByType(Soil.class) == null
-                && getObjectByType(Stone.class) == null);
+        return gameObjects.isEmpty() || (!hasObjectType(Soil.class)
+                && !hasObjectType(Stone.class));
     }
 }

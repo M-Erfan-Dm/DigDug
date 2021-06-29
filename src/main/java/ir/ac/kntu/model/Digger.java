@@ -5,6 +5,8 @@ import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.util.Duration;
 
+import java.util.List;
+
 public class Digger extends GameObject implements Movable {
     private static final String SIMPLE_IMAGE_1 = "src/main/resources/assets/digger_simple1.png";
 
@@ -105,7 +107,7 @@ public class Digger extends GameObject implements Movable {
 
     private boolean isDiggingMove(int nextGridX, int nextGridY) {
         Cell cell = getMap().getCell(nextGridX, nextGridY);
-        return cell.getObjectByType(Soil.class) != null;
+        return cell.hasObjectType(Soil.class);
     }
 
     private void diggingMove() {
@@ -120,9 +122,9 @@ public class Digger extends GameObject implements Movable {
                 setImage(DIGGING_IMAGE_2);
             }
             Cell cell = getMap().getCell(getGridX(), getGridY());
-            Soil soil = cell.getObjectByType(Soil.class);
-            if (soil != null) {
-                soil.destroy(cell);
+            List<Soil> soils = cell.getObjectsByType(Soil.class);
+            if (!soils.isEmpty()) {
+                soils.get(0).destroy(cell);
             }
             getImageView().setLayoutX(Movable.getNextPositionByStep(getImageView().getLayoutX(), realX, step));
             getImageView().setLayoutY(Movable.getNextPositionByStep(getImageView().getLayoutY(), realY, step));
@@ -145,7 +147,7 @@ public class Digger extends GameObject implements Movable {
             return false;
         }
         Cell cell = getMap().getCell(x, y);
-        return cell.getObjectByType(Stone.class) == null;
+        return !cell.hasObjectType(Stone.class);
     }
 
     public void setVelocityFast() {

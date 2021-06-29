@@ -128,4 +128,12 @@ public abstract class GameObject {
         }
         return null;
     }
+
+    public void showImageView(){
+        imageView.setVisible(true);
+    }
+
+    public void hideImageView(){
+        imageView.setVisible(false);
+    }
 }

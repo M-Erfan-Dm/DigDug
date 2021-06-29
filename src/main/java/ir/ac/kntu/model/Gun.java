@@ -41,7 +41,7 @@ public class Gun extends GameObject implements Movable {
         setGridX((int) nextPoint.getX());
         setGridY((int) nextPoint.getY());
         updateRealPos();
-        showGun();
+        showImageView();
         setDirection(direction);
         updateViewDirection();
         Point2D finalPoint = getNextPoint(getGridX(), getGridY(), distanceRange, direction);
@@ -81,7 +81,7 @@ public class Gun extends GameObject implements Movable {
         timeline.setCycleCount(count);
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
-            hideGun();
+            hideImageView();
             if (onGunShootingFinishListener !=null){
                 onGunShootingFinishListener.onFinish();
             }
@@ -96,19 +96,11 @@ public class Gun extends GameObject implements Movable {
         return cell.hasObjectType(Soil.class) || cell.hasObjectType(Stone.class);
     }
 
-    public void showGun() {
-        getImageView().setVisible(true);
-    }
-
-    public void hideGun() {
-        getImageView().setVisible(false);
-    }
-
     private boolean canGunMoveToNextCell(int moveCounter){
         if (moveCounter % GlobalConstants.CELL_MOVING_PARTS_COUNT == 0) {
             Point2D nextPoint = getNextPoint(getGridX(), getGridY(), 1, getDirection());
             if (nextPoint == null || isCellBlockedForBullet(((int) nextPoint.getX()), ((int) nextPoint.getY()))) {
-                hideGun();
+                hideImageView();
                 return false;
             } else {
                 setGridX((int) nextPoint.getX());
@@ -125,7 +117,7 @@ public class Gun extends GameObject implements Movable {
             for (Enemy enemy : enemies){
                 enemy.hit();
             }
-            hideGun();
+            hideImageView();
             return true;
         }
         return false;

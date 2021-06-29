@@ -26,6 +26,8 @@ public class GlobalConstants {
 
     public static final int MUSHROOM = 11;
 
+    public static final int CELL_MOVING_PARTS_COUNT = 3;
+
 
     public static boolean isCodeOfSoil(int code) {
         return code == SOIL_1 || code == SOIL_2 ||

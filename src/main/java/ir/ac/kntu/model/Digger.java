@@ -36,6 +36,8 @@ public class Digger extends GameObject implements Movable {
 
     private final Gun gun;
 
+    private OnGameObjectDeathListener onDiggerDeathListener;
+
     public Digger(Map map, int x, int y, Gun gun) {
         super(map, x, y);
         this.gun = gun;
@@ -46,6 +48,10 @@ public class Digger extends GameObject implements Movable {
 
     public Gun getGun() {
         return gun;
+    }
+
+    public void setOnDiggerDeathListener(OnGameObjectDeathListener onDiggerDeathListener) {
+        this.onDiggerDeathListener = onDiggerDeathListener;
     }
 
     @Override
@@ -167,5 +173,34 @@ public class Digger extends GameObject implements Movable {
     public void setVelocityNormal() {
         velocityMilliSecond = NORMAL_VELOCITY_MILLISECOND;
     }
-    
+
+    public void die(){
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(300),actionEvent -> {
+            switch (getImagePath()){
+                case DEATH_1:
+                    setImage(DEATH_2);
+                    break;
+                case DEATH_2:
+                    setImage(DEATH_3);
+                    break;
+                case DEATH_3:
+                    setImage(DEATH_4);
+                    break;
+                case DEATH_4:
+                    setImage(DEATH_5);
+                    break;
+                default:
+                    setImage(DEATH_1);
+                    break;
+            }
+        }));
+        timeline.setCycleCount(6);
+        timeline.play();
+        timeline.setOnFinished(actionEvent -> {
+            hideImageView();
+            if (onDiggerDeathListener !=null){
+                onDiggerDeathListener.onDeath();
+            }
+        });
+    }
 }

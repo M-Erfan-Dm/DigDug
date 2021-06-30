@@ -25,7 +25,7 @@ public class Map {
     }
 
     public double getPosition(int pos){
-        return pos * Cell.CELL_SIZE;
+        return pos * GlobalConstants.CELL_SIZE;
     }
 
     public Digger getDigger() {

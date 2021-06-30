@@ -63,7 +63,7 @@ public class Gun extends GameObject implements Movable {
         double realX = getMap().getPosition(gridX);
         double realY = getMap().getPosition(gridY);
         int count = Math.max(Math.abs(gridX - getGridX()), Math.abs(gridY - getGridY())) * GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        int step = Cell.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
+        int step = GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
         AtomicInteger counter = new AtomicInteger();
         AtomicBoolean canMove = new AtomicBoolean(true);
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(30),actionEvent -> {

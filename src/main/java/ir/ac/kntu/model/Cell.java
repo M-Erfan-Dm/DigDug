@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Cell {
-    public static final int CELL_SIZE = 24;
 
     private final Set<GameObject> gameObjects;
 

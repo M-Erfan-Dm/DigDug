@@ -5,8 +5,6 @@ import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.util.Duration;
 
-import java.util.List;
-
 public class Digger extends GameObject implements Movable {
     private static final String SIMPLE_IMAGE_1 = "src/main/resources/assets/digger_simple1.png";
 
@@ -106,7 +104,7 @@ public class Digger extends GameObject implements Movable {
         double realX = getMap().getPosition(getGridX());
         double realY = getMap().getPosition(getGridY());
         int count = GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        double step = (double) Cell.CELL_SIZE / count;
+        double step = (double) GlobalConstants.CELL_SIZE / count;
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(velocityMilliSecond), actionEvent -> {
             if (!getImagePath().equals(SIMPLE_IMAGE_1)) {
                 setImage(SIMPLE_IMAGE_1);
@@ -131,7 +129,7 @@ public class Digger extends GameObject implements Movable {
         double realX = getMap().getPosition(getGridX());
         double realY = getMap().getPosition(getGridY());
         int count = GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        double step = (double) Cell.CELL_SIZE / count;
+        double step = (double) GlobalConstants.CELL_SIZE / count;
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(velocityMilliSecond), actionEvent -> {
             if (!getImagePath().equals(DIGGING_IMAGE_1)) {
                 setImage(DIGGING_IMAGE_1);

@@ -29,7 +29,7 @@ public class Stone extends GameObject {
         if (nextPoint == null || !canStoneGoToCell(((int) nextPoint.getX()), ((int) nextPoint.getY()))) {
             return;
         }
-        double step = (double) Cell.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
+        double step = (double) GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
         Timeline fallDownAnimation = new Timeline(new KeyFrame(Duration.millis(30), actionEvent -> {
             Point2D nextCellPart = getNextPoint(getRealX(), getRealY(), step, Direction.DOWN);
             if (nextCellPart != null) {

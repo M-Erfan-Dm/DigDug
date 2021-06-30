@@ -108,7 +108,7 @@ public abstract class GameObject {
     public void setImage(String path){
         imagePath = path;
         imageView.setImage(new Image(new File(imagePath).toURI().toString(),
-                Cell.CELL_SIZE,Cell.CELL_SIZE,false,false));
+                GlobalConstants.CELL_SIZE, GlobalConstants.CELL_SIZE,false,false));
     }
 
     public Point2D getNextPoint(double startX,double startY,double step,Direction direction){

@@ -77,6 +77,10 @@ public class Map {
         return cells[y][x];
     }
 
+    public boolean isGridCoordinateInMap(int gridX,int gridY) {
+        return gridX >= 0 && gridX < width && gridY >= 0 && gridY < height;
+    }
+
     public void draw(Pane pane){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {

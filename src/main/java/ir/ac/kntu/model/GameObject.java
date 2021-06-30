@@ -32,7 +32,10 @@ public abstract class GameObject {
     }
 
     public void setGridX(int gridX) {
+        getMap().getCell(getGridX(),getGridY()).remove(this);
         this.gridX = gridX;
+        getMap().getCell(getGridX(),getGridY()).add(this);
+
     }
 
     public int getGridY() {
@@ -40,7 +43,16 @@ public abstract class GameObject {
     }
 
     public void setGridY(int gridY) {
+        getMap().getCell(getGridX(),getGridY()).remove(this);
         this.gridY = gridY;
+        getMap().getCell(getGridX(),getGridY()).add(this);
+    }
+
+    public void setCoordinate(int gridX,int gridY){
+        getMap().getCell(getGridX(),getGridY()).remove(this);
+        this.gridX = gridX;
+        this.gridY = gridY;
+        getMap().getCell(getGridX(),getGridY()).add(this);
     }
 
     public Map getMap() {
@@ -135,5 +147,21 @@ public abstract class GameObject {
 
     public void hideImageView(){
         imageView.setVisible(false);
+    }
+
+    public double getRealX(){
+        return imageView.getLayoutX();
+    }
+
+    public void setRealX(double x){
+        imageView.setLayoutX(x);
+    }
+
+    public double getRealY(){
+        return imageView.getLayoutY();
+    }
+
+    public void setRealY(double y){
+        imageView.setLayoutY(y);
     }
 }

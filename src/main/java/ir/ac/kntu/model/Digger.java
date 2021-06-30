@@ -5,8 +5,6 @@ import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.util.Duration;
 
-import java.util.List;
-
 public class Digger extends GameObject implements Movable {
     private static final String SIMPLE_IMAGE_1 = "src/main/resources/assets/digger_simple1.png";
 
@@ -59,13 +57,13 @@ public class Digger extends GameObject implements Movable {
         if (!canMoveToNextCell(gridX, gridY)) {
             return;
         }
-        setGridX(gridX);
-        setGridY(gridY);
+        setCoordinate(gridX, gridY);
         if (isSimpleMove(gridX, gridY)) {
             simpleMove();
         } else if (isDiggingMove(gridX, gridY)) {
             diggingMove();
         }
+        checkStone();
     }
 
     public void attachKeyboardHandlers(Scene scene) {
@@ -138,31 +136,31 @@ public class Digger extends GameObject implements Movable {
             } else if (!getImagePath().equals(DIGGING_IMAGE_2)) {
                 setImage(DIGGING_IMAGE_2);
             }
-            Cell cell = getMap().getCell(getGridX(), getGridY());
-            List<Soil> soils = cell.getObjectsByType(Soil.class);
-            if (!soils.isEmpty()) {
-                soils.get(0).destroy(cell);
-            }
-            getImageView().setLayoutX(Movable.getNextPositionByStep(getImageView().getLayoutX(), realX, step));
-            getImageView().setLayoutY(Movable.getNextPositionByStep(getImageView().getLayoutY(), realY, step));
+            setRealX(Movable.getNextPositionByStep(getImageView().getLayoutX(), realX, step));
+            setRealY(Movable.getNextPositionByStep(getImageView().getLayoutY(), realY, step));
         }));
         timeline.setCycleCount(count);
         timeline.play();
         canMove = false;
         timeline.setOnFinished(actionEvent -> canMove = true);
+        Cell cell = getMap().getCell(getGridX(), getGridY());
+        Soil soil = cell.getFirstObjectByType(Soil.class);
+        if (soil != null) {
+            soil.destroy();
+        }
     }
 
     private void shoot() {
         canMove = false;
         setImage(SHOOTING_IMAGE);
-        gun.shoot(getDirection(),getGridX(),getGridY());
+        gun.shoot(getDirection(), getGridX(), getGridY());
     }
 
-    private boolean canMoveToNextCell(int x, int y) {
-        if (x < 0 || x >= getMap().getWidth() || y < 0 || y >= getMap().getHeight()) {
+    private boolean canMoveToNextCell(int gridX, int gridY) {
+        if (!getMap().isGridCoordinateInMap(gridX, gridY)) {
             return false;
         }
-        Cell cell = getMap().getCell(x, y);
+        Cell cell = getMap().getCell(gridX, gridY);
         return !cell.hasObjectType(Stone.class);
     }
 
@@ -174,9 +172,10 @@ public class Digger extends GameObject implements Movable {
         velocityMilliSecond = NORMAL_VELOCITY_MILLISECOND;
     }
 
-    public void die(){
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(300),actionEvent -> {
-            switch (getImagePath()){
+    public void die() {
+        canMove = false;
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> {
+            switch (getImagePath()) {
                 case DEATH_1:
                     setImage(DEATH_2);
                     break;
@@ -193,14 +192,25 @@ public class Digger extends GameObject implements Movable {
                     setImage(DEATH_1);
                     break;
             }
-        }));
+        }),new KeyFrame(Duration.millis(250)));
         timeline.setCycleCount(6);
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
             hideImageView();
-            if (onDiggerDeathListener !=null){
+            if (onDiggerDeathListener != null) {
                 onDiggerDeathListener.onDeath();
             }
         });
+    }
+
+    private void checkStone() {
+        Cell cell = getMap().getCell(getGridX(), getGridY() - 1);
+        if (cell == null) {
+            return;
+        }
+        Stone stone = cell.getFirstObjectByType(Stone.class);
+        if (stone != null) {
+            stone.fallDown();
+        }
     }
 }

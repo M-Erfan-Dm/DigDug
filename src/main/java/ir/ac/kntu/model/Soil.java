@@ -28,9 +28,6 @@ public class Soil extends GameObject {
 
     private void updateImageByType() {
         switch (type) {
-            case GlobalConstants.SOIL_1:
-                setImage("src/main/resources/assets/soil1.png");
-                break;
             case GlobalConstants.SOIL_2:
                 setImage("src/main/resources/assets/soil2.png");
                 break;
@@ -40,6 +37,7 @@ public class Soil extends GameObject {
             case GlobalConstants.SOIL_4:
                 setImage("src/main/resources/assets/soil4.png");
                 break;
+            case GlobalConstants.SOIL_1:
             default:
                 setImage("src/main/resources/assets/soil1.png");
                 break;
@@ -53,8 +51,8 @@ public class Soil extends GameObject {
         return GlobalConstants.SOIL_1;
     }
 
-    public void destroy(Cell cell){
-        cell.remove(this);
+    public void destroy(){
+        getMap().getCell(getGridX(),getGridY()).remove(this);
         getImageView().setVisible(false);
     }
 }

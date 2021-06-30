@@ -74,7 +74,10 @@ public class Map {
     }
 
     public Cell getCell(int x,int y){
-        return cells[y][x];
+        if (isGridCoordinateInMap(x,y)){
+            return cells[y][x];
+        }
+        return null;
     }
 
     public boolean isGridCoordinateInMap(int gridX,int gridY) {

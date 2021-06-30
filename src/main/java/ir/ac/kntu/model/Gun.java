@@ -112,7 +112,7 @@ public class Gun extends GameObject implements Movable {
 
     private boolean checkEnemy(){
         Cell cell = getMap().getCell(getGridX(),getGridY());
-        List<Enemy> enemies = cell.getObjectsByType(Enemy.class);
+        List<Enemy> enemies = cell.getAllObjectsByType(Enemy.class);
         if (!enemies.isEmpty()){
             for (Enemy enemy : enemies){
                 enemy.hit();

@@ -164,4 +164,8 @@ public abstract class GameObject {
     public void setRealY(double y){
         imageView.setLayoutY(y);
     }
+
+    public Cell getCell(){
+        return map.getCell(gridX,gridY);
+    }
 }

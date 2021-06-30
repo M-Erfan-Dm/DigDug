@@ -1,6 +1,10 @@
 package ir.ac.kntu.model;
 
+import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Map {
 
@@ -11,6 +15,8 @@ public class Map {
     private Cell[][] cells;
 
     private Digger digger;
+
+    private ExtraSkillObjectController extraSkillObjectController;
 
     public Map(int width, int height, int[][] rawMap) {
         this.width = width;
@@ -32,6 +38,10 @@ public class Map {
 
     public int getHeight() {
         return height;
+    }
+
+    public ExtraSkillObjectController getExtraSkillObjectController() {
+        return extraSkillObjectController;
     }
 
     private void createAllGameObjects(int[][] rawMap) {
@@ -84,6 +94,19 @@ public class Map {
         return gridX >= 0 && gridX < width && gridY >= 0 && gridY < height;
     }
 
+    public List<Point2D> getEmptyPoints(){
+        List<Point2D> points = new ArrayList<>();
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                Cell cell = cells[i][j];
+                if (cell.isEmpty()){
+                    points.add(new Point2D(j,i));
+                }
+            }
+        }
+        return points;
+    }
+
     public void draw(Pane pane){
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -92,5 +115,7 @@ public class Map {
             }
         }
         pane.getChildren().add(digger.getGun().getImageView());
+        extraSkillObjectController = new ExtraSkillObjectController(pane,this);
+        extraSkillObjectController.run();
     }
 }

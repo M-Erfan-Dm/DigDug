@@ -5,6 +5,8 @@ import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.util.Duration;
 
+import java.util.List;
+
 public class Digger extends GameObject implements Movable {
     private static final String SIMPLE_IMAGE_1 = "src/main/resources/assets/digger_simple1.png";
 
@@ -63,7 +65,7 @@ public class Digger extends GameObject implements Movable {
         } else if (isDiggingMove(gridX, gridY)) {
             diggingMove();
         }
-        checkStone();
+        checkObjects();
     }
 
     public void attachKeyboardHandlers(Scene scene) {
@@ -202,6 +204,10 @@ public class Digger extends GameObject implements Movable {
             }
         });
     }
+    private void checkObjects(){
+        checkStone();
+        checkExtraSkillObject();
+    }
 
     private void checkStone() {
         Cell cell = getMap().getCell(getGridX(), getGridY() - 1);
@@ -212,5 +218,18 @@ public class Digger extends GameObject implements Movable {
         if (stone != null) {
             stone.fallDown();
         }
+    }
+
+    private void checkExtraSkillObject(){
+        Cell cell = getCell();
+        if (cell.hasObjectType(ExtraSkillObject.class)){
+            ExtraSkillObjectController controller = getMap().getExtraSkillObjectController();
+            controller.catchObject();
+        }
+    }
+
+    public void resetExtraSkills(){
+        setVelocityNormal();
+        gun.setSimpleDistanceRange();
     }
 }

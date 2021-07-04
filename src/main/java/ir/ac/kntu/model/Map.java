@@ -14,6 +14,8 @@ public class Map {
 
     private Cell[][] cells;
 
+    private List<GameObject> gameObjects;
+
     private Digger digger;
 
     private ExtraSkillObjectController extraSkillObjectController;
@@ -21,6 +23,7 @@ public class Map {
     public Map(int width, int height, int[][] rawMap) {
         this.width = width;
         this.height = height;
+        gameObjects = new ArrayList<>();
         createAllGameObjects(rawMap);
     }
 
@@ -52,6 +55,7 @@ public class Map {
                 int code = rawMap[i][j];
                 GameObject object = createGameObjectByCode(j,i,code);
                 if (object!=null){
+                    gameObjects.add(object);
                     cell.add(object);
                 }
                 cells[i][j] = cell;
@@ -67,6 +71,7 @@ public class Map {
             case GlobalConstants.DIGGER:
                 if (digger==null){
                     Gun gun = new Gun(this,x,y);
+                    gameObjects.add(gun);
                     digger = new Digger(this, x, y, gun);
                     return digger;
                 }
@@ -108,14 +113,14 @@ public class Map {
     }
 
     public void draw(Pane pane){
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Cell cell = cells[i][j];
-                cell.getGameObjects().forEach(gameObject -> pane.getChildren().add(gameObject.getImageView()));
-            }
-        }
-        pane.getChildren().add(digger.getGun().getImageView());
+        gameObjects.forEach(gameObject -> pane.getChildren().add(gameObject.getImageView()));
         extraSkillObjectController = new ExtraSkillObjectController(pane,this);
         extraSkillObjectController.run();
+        runGameObjects();
+    }
+
+    private void runGameObjects(){
+        gameObjects.stream().filter(gameObject -> gameObject instanceof Enemy)
+                .forEach(gameObject -> ((Enemy) gameObject).run());
     }
 }

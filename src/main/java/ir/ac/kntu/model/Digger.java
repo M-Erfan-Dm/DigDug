@@ -57,7 +57,7 @@ public class Digger extends GameObject implements Movable {
         if (!canMoveToNextCell(gridX, gridY)) {
             return;
         }
-        setCoordinate(gridX, gridY);
+        setGridCoordinate(gridX, gridY);
         if (isSimpleMove(gridX, gridY)) {
             simpleMove();
         } else if (isDiggingMove(gridX, gridY)) {

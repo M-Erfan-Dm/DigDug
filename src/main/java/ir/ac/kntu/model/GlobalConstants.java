@@ -30,6 +30,7 @@ public class GlobalConstants {
 
     public static final int CELL_SIZE = 24;
 
+    public static final int ENEMY_INITIAL_DELAY_SEC = 2;
 
     public static boolean isCodeOfSoil(int code) {
         return code == SOIL_1 || code == SOIL_2 ||

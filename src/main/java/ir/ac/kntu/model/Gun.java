@@ -20,6 +20,8 @@ public class Gun extends GameObject implements Movable {
 
     private OnGunShootingFinishListener onGunShootingFinishListener;
 
+    private Timeline movingAnimation;
+
     public Gun(Map map, int gridX, int gridY) {
         super(map, gridX, gridY);
         setImage(GUN_IMAGE);
@@ -66,7 +68,7 @@ public class Gun extends GameObject implements Movable {
         int step = GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
         AtomicInteger counter = new AtomicInteger();
         AtomicBoolean canMove = new AtomicBoolean(true);
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(30),actionEvent -> {
+        movingAnimation = new Timeline(new KeyFrame(Duration.millis(30),actionEvent -> {
             if (canMove.get()) {
                 canMove.set(checkEnemy());
                 canMove.set(canGunMoveToNextCell(counter.get()));
@@ -78,9 +80,9 @@ public class Gun extends GameObject implements Movable {
                 counter.getAndIncrement();
             }
         }));
-        timeline.setCycleCount(count);
-        timeline.play();
-        timeline.setOnFinished(actionEvent -> {
+        movingAnimation.setCycleCount(count);
+        movingAnimation.play();
+        movingAnimation.setOnFinished(actionEvent -> {
             hideImageView();
             if (onGunShootingFinishListener !=null){
                 onGunShootingFinishListener.onFinish();
@@ -114,12 +116,20 @@ public class Gun extends GameObject implements Movable {
         Cell cell = getMap().getCell(getGridX(),getGridY());
         List<Enemy> enemies = cell.getAllObjectsByType(Enemy.class);
         if (!enemies.isEmpty()){
+            stopGun();
             for (Enemy enemy : enemies){
-                enemy.hit();
+                enemy.die();
             }
-            hideImageView();
             return true;
         }
         return false;
+    }
+
+    private void stopGun(){
+        movingAnimation.stop();
+        hideImageView();
+        if (onGunShootingFinishListener!=null){
+            onGunShootingFinishListener.onFinish();
+        }
     }
 }

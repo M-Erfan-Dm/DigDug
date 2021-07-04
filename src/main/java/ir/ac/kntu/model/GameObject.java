@@ -48,7 +48,7 @@ public abstract class GameObject {
         getMap().getCell(getGridX(),getGridY()).add(this);
     }
 
-    public void setCoordinate(int gridX,int gridY){
+    public void setGridCoordinate(int gridX, int gridY){
         getMap().getCell(getGridX(),getGridY()).remove(this);
         this.gridX = gridX;
         this.gridY = gridY;

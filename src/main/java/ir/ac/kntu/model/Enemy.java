@@ -7,9 +7,11 @@ import javafx.util.Duration;
 
 import java.util.*;
 
-public abstract class Enemy extends GameObject  implements Movable{
+public abstract class Enemy extends GameObject implements Movable {
 
     private Timeline movingAnimation;
+
+    private Timeline hitAnimation;
 
     private boolean firstRun = true;
 
@@ -23,10 +25,16 @@ public abstract class Enemy extends GameObject  implements Movable{
 
     private OnGameObjectDeathListener onEnemyDeathListener;
 
-    public Enemy(Map map, int gridX, int gridY, List<String> simpleImagesPath, List<String> deathImagesPath) {
+    private int totalHealth;
+
+    private int curHealth;
+
+    public Enemy(Map map, int gridX, int gridY, List<String> simpleImagesPath, List<String> deathImagesPath, int totalHealth) {
         super(map, gridX, gridY);
         this.simpleImagesPath = simpleImagesPath;
         this.deathImagesPath = deathImagesPath;
+        this.totalHealth = totalHealth;
+        this.curHealth = totalHealth;
         random = new Random();
     }
 
@@ -46,18 +54,41 @@ public abstract class Enemy extends GameObject  implements Movable{
         this.onEnemyDeathListener = onEnemyDeathListener;
     }
 
-    public void run(){
+    public void run() {
+        updateRealPos();
         canMove = true;
         moveOneCell();
+    }
+
+    public void hit() {
+        curHealth--;
+        if (curHealth == 0) {
+            die();
+            return;
+        }
+        if (hitAnimation == null) {
+            hitAnimation = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> {
+                alternateImages(deathImagesPath);
+                stopMoving();
+            }), new KeyFrame(Duration.seconds(2)));
+            hitAnimation.setOnFinished(actionEvent -> {
+                curHealth = totalHealth;
+                run();
+            });
+        }
+        hitAnimation.stop();
+        hitAnimation.playFromStart();
     }
 
     public void die() {
         getCell().remove(this);
         Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent ->
                 alternateImages(deathImagesPath)),
-                new KeyFrame(Duration.millis(300)));
-        timeline.setCycleCount(deathImagesPath.size());
-        getMovingAnimation().stop();
+                new KeyFrame(Duration.seconds(2)));
+        stopMoving();
+        if (hitAnimation != null) {
+            hitAnimation.stop();
+        }
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
             hideImageView();

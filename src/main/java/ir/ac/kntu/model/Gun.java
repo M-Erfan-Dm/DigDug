@@ -103,7 +103,7 @@ public class Gun extends GameObject implements Movable {
         List<Enemy> enemies = cell.getAllObjectsByType(Enemy.class);
         if (!enemies.isEmpty()){
             for (Enemy enemy : enemies){
-                enemy.die();
+                enemy.hit();
             }
             return true;
         }

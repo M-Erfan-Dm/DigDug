@@ -79,7 +79,9 @@ public class Map {
             case GlobalConstants.POOKA:
                 return new Pooka(this,x,y);
             case GlobalConstants.FYGAR:
-                return new Fygar(this,x,y);
+                Fire fire = new Fire(this,x,y);
+                gameObjects.add(fire);
+                return new Fygar(this,x,y, fire);
             case GlobalConstants.STONE:
                 return new Stone(this,x,y);
             default:

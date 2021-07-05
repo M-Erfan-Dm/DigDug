@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.File;
+import java.util.List;
 
 public abstract class GameObject {
 
@@ -139,6 +140,20 @@ public abstract class GameObject {
             return new Point2D(x,y);
         }
         return null;
+    }
+
+    public void alternateImages(List<String> images){
+        if (images.size()==0){
+            return;
+        }
+        for (int i = 0; i < images.size() - 1; i++) {
+            String path = images.get(i);
+            if (getImagePath().equals(path)){
+                setImage(images.get(i+1));
+                return;
+            }
+        }
+        setImage(images.get(0));
     }
 
     public void showImageView(){

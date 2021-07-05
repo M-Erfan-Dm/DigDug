@@ -196,6 +196,7 @@ public class Digger extends GameObject implements Movable {
         timeline.setCycleCount(6);
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
+            getCell().remove(this);
             hideImageView();
             if (onDiggerDeathListener != null) {
                 onDiggerDeathListener.onDeath();

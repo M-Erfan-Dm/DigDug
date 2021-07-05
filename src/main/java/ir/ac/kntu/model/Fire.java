@@ -5,7 +5,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
-public class Fire extends GameObject {
+public class Fire extends GameObject{
 
     private static final String FYGAR_FIRE = "src/main/resources/assets/fygar_fire.png";
 

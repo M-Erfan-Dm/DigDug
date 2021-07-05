@@ -22,6 +22,8 @@ public class Gun extends GameObject implements Movable {
 
     private Timeline movingAnimation;
 
+    private int movedCellsCounter;
+
     public Gun(Map map, int gridX, int gridY) {
         super(map, gridX, gridY);
         setImage(GUN_IMAGE);
@@ -33,23 +35,12 @@ public class Gun extends GameObject implements Movable {
     }
 
     public void shoot(Direction direction, int diggerGridX, int diggerGridY) {
-        Point2D nextPoint = getNextPoint(diggerGridX, diggerGridY, 1, direction);
-        if (nextPoint == null || isCellBlockedForBullet(((int) nextPoint.getX()), ((int) nextPoint.getY()))) {
-            if (onGunShootingFinishListener !=null){
-                onGunShootingFinishListener.onFinish();
-            }
-            return;
-        }
-        setGridX((int) nextPoint.getX());
-        setGridY((int) nextPoint.getY());
+        setGridCoordinate(diggerGridX,diggerGridY);
         updateRealPos();
         showImageView();
         setDirection(direction);
         updateViewDirection();
-        Point2D finalPoint = getNextPoint(getGridX(), getGridY(), distanceRange, direction);
-        if (finalPoint != null) {
-            move((int) finalPoint.getX(), (int) finalPoint.getY());
-        }
+        moveOneCell();
     }
 
     public void setSimpleDistanceRange() {
@@ -61,62 +52,56 @@ public class Gun extends GameObject implements Movable {
     }
 
     @Override
-    public void move(int gridX, int gridY) {
-        double realX = getMap().getPosition(gridX);
-        double realY = getMap().getPosition(gridY);
-        int count = Math.max(Math.abs(gridX - getGridX()), Math.abs(gridY - getGridY())) * GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        int step = GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        AtomicInteger counter = new AtomicInteger();
-        AtomicBoolean canMove = new AtomicBoolean(true);
+    public void moveOneCell() {
+        Point2D nextGridPoint = getNextPoint(getGridX(), getGridY(), 1, getDirection());
+        int gridX = (int) nextGridPoint.getX();
+        int gridY = (int) nextGridPoint.getY();
+        if (!canBulletMoveToNextCell(gridX,gridY)){
+            stopGun();
+            return;
+        }
+        setGridCoordinate(gridX,gridY);
+        int count = GlobalConstants.CELL_MOVING_PARTS_COUNT;
+        int step = GlobalConstants.CELL_SIZE / count;
         movingAnimation = new Timeline(new KeyFrame(Duration.millis(30),actionEvent -> {
-            if (canMove.get()) {
-                canMove.set(checkEnemy());
-                canMove.set(canGunMoveToNextCell(counter.get()));
-                if (!canMove.get() && onGunShootingFinishListener !=null){
-                    onGunShootingFinishListener.onFinish();
-                }
-                getImageView().setLayoutX(Movable.getNextPositionByStep(getImageView().getLayoutX(), realX, step));
-                getImageView().setLayoutY(Movable.getNextPositionByStep(getImageView().getLayoutY(), realY, step));
-                counter.getAndIncrement();
+            Point2D nextPoint = getNextPoint(getRealX(), getRealY(), step, getDirection());
+            setRealX(nextPoint.getX());
+            setRealY(nextPoint.getY());
+            boolean enemyExists = checkEnemy();
+            if (enemyExists){
+                stopGun();
             }
         }));
         movingAnimation.setCycleCount(count);
         movingAnimation.play();
         movingAnimation.setOnFinished(actionEvent -> {
-            hideImageView();
-            if (onGunShootingFinishListener !=null){
-                onGunShootingFinishListener.onFinish();
-            }
+            movedCellsCounter++;
+            moveOneCell();
         });
     }
 
+    @Override
+    public void stopMoving() {
+        movingAnimation.stop();
+        hideImageView();
+    }
+
     private boolean isCellBlockedForBullet(int gridX, int gridY) {
-        if (gridX < 0 || gridX >= getMap().getWidth() || gridY < 0 || gridY >= getMap().getHeight()) {
+        if (!getMap().isGridCoordinateInMap(gridX,gridY)){
             return true;
         }
         Cell cell = getMap().getCell(gridX, gridY);
         return cell.hasObjectType(Soil.class) || cell.hasObjectType(Stone.class);
     }
 
-    private boolean canGunMoveToNextCell(int moveCounter){
-        if (moveCounter % GlobalConstants.CELL_MOVING_PARTS_COUNT == 0) {
-            Point2D nextPoint = getNextPoint(getGridX(), getGridY(), 1, getDirection());
-            if (nextPoint == null || isCellBlockedForBullet(((int) nextPoint.getX()), ((int) nextPoint.getY()))) {
-                hideImageView();
-                return false;
-            } else {
-                setGridX((int) nextPoint.getX());
-                setGridY((int) nextPoint.getY());
-            }
-        }
-        return true;
+    private boolean canBulletMoveToNextCell(int gridX,int gridY){
+        return movedCellsCounter < distanceRange && !isCellBlockedForBullet(gridX,gridY);
     }
 
     private boolean checkEnemy(){
         Cell cell = getMap().getCell(getGridX(),getGridY());
         List<Enemy> enemies = cell.getAllObjectsByType(Enemy.class);
         if (!enemies.isEmpty()){
-            stopGun();
             for (Enemy enemy : enemies){
                 enemy.die();
             }
@@ -128,6 +113,7 @@ public class Gun extends GameObject implements Movable {
     private void stopGun(){
         movingAnimation.stop();
         hideImageView();
+        movedCellsCounter = 0;
         if (onGunShootingFinishListener!=null){
             onGunShootingFinishListener.onFinish();
         }

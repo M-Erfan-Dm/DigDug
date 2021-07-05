@@ -36,11 +36,6 @@ public class Fygar extends Enemy {
         checkEnemyToFire();
     }
 
-    @Override
-    public void move(int gridX, int gridY) {
-
-    }
-
     private void checkEnemyToFire(){
         Point2D nextPoint = getNextPoint(getGridX(), getGridY(), 1, getDirection());
         int nextGridX = (int) nextPoint.getX();

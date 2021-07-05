@@ -7,11 +7,14 @@ import javafx.util.Duration;
 
 import java.util.List;
 
-public class Stone extends GameObject {
+public class Stone extends GameObject implements Movable {
     private static final String IMAGE = "src/main/resources/assets/stone.png";
 
     private static final int FALL_DOWN_DELAY_MILLISECOND = 600;
+
     private boolean firstFall;
+
+    private Timeline fallDownAnimation;
 
     public Stone(Map map, int x, int y) {
         super(map, x, y);
@@ -24,13 +27,14 @@ public class Stone extends GameObject {
         moveOneCell();
     }
 
-    private void moveOneCell() {
+    @Override
+    public void moveOneCell() {
         Point2D nextPoint = getNextPoint(getGridX(), getGridY(), 1, Direction.DOWN);
         if (nextPoint == null || !canStoneGoToCell(((int) nextPoint.getX()), ((int) nextPoint.getY()))) {
             return;
         }
         double step = (double) GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        Timeline fallDownAnimation = new Timeline(new KeyFrame(Duration.millis(30), actionEvent -> {
+        fallDownAnimation = new Timeline(new KeyFrame(Duration.millis(30), actionEvent -> {
             Point2D nextCellPart = getNextPoint(getRealX(), getRealY(), step, Direction.DOWN);
             if (nextCellPart != null) {
                 setRealX(((int) nextCellPart.getX()));
@@ -48,6 +52,11 @@ public class Stone extends GameObject {
             checkDiggerAndEnemies();
             moveOneCell();
         });
+    }
+
+    @Override
+    public void stopMoving() {
+        fallDownAnimation.stop();
     }
 
     private void checkDiggerAndEnemies() {

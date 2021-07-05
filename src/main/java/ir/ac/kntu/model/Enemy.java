@@ -7,7 +7,7 @@ import javafx.util.Duration;
 
 import java.util.*;
 
-public abstract class Enemy extends GameObject implements Movable {
+public abstract class Enemy extends GameObject  implements Movable{
 
     private Timeline movingAnimation;
 
@@ -52,6 +52,7 @@ public abstract class Enemy extends GameObject implements Movable {
     }
 
     public void die() {
+        getCell().remove(this);
         Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent ->
                 alternateImages(deathImagesPath)),
                 new KeyFrame(Duration.millis(300)));
@@ -59,7 +60,6 @@ public abstract class Enemy extends GameObject implements Movable {
         getMovingAnimation().stop();
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
-            getCell().remove(this);
             hideImageView();
             if (onEnemyDeathListener != null) {
                 onEnemyDeathListener.onDeath();
@@ -75,6 +75,7 @@ public abstract class Enemy extends GameObject implements Movable {
         return cell.isEmpty();
     }
 
+    @Override
     public void moveOneCell() {
         if (!canMove) {
             return;
@@ -131,7 +132,9 @@ public abstract class Enemy extends GameObject implements Movable {
         }
     }
 
+    @Override
     public void stopMoving() {
         canMove = false;
+        movingAnimation.stop();
     }
 }

@@ -22,10 +22,6 @@ public class Pooka extends Enemy {
         updateRealPos();
     }
 
-    @Override
-    public void move(int gridX, int gridY) {
-
-    }
 
     @Override
     public void updateViewDirection() {

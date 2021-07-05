@@ -5,6 +5,9 @@ import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.util.Duration;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Digger extends GameObject implements Movable {
     private static final String SIMPLE_IMAGE_1 = "src/main/resources/assets/digger_simple1.png";
 
@@ -16,15 +19,15 @@ public class Digger extends GameObject implements Movable {
 
     private static final String SHOOTING_IMAGE = "src/main/resources/assets/digger_shooting.png";
 
-    private static final String DEATH_1 = "src/main/resources/assets/digger_death1.png";
+    private static final String DEATH_IMAGE_1 = "src/main/resources/assets/digger_death1.png";
 
-    private static final String DEATH_2 = "src/main/resources/assets/digger_death2.png";
+    private static final String DEATH_IMAGE_2 = "src/main/resources/assets/digger_death2.png";
 
-    private static final String DEATH_3 = "src/main/resources/assets/digger_death3.png";
+    private static final String DEATH_IMAGE_3 = "src/main/resources/assets/digger_death3.png";
 
-    private static final String DEATH_4 = "src/main/resources/assets/digger_death4.png";
+    private static final String DEATH_IMAGE_4 = "src/main/resources/assets/digger_death4.png";
 
-    private static final String DEATH_5 = "src/main/resources/assets/digger_death5.png";
+    private static final String DEATH_IMAGE_5 = "src/main/resources/assets/digger_death5.png";
 
     private static final double NORMAL_VELOCITY_MILLISECOND = 39;
 
@@ -35,6 +38,12 @@ public class Digger extends GameObject implements Movable {
     private final Gun gun;
 
     private OnGameObjectDeathListener onDiggerDeathListener;
+
+    private final List<String> simpleImagesPath = Arrays.asList(SIMPLE_IMAGE_1,SIMPLE_IMAGE_2);
+
+    private final List<String> deathImagesPath =  Arrays.asList(DEATH_IMAGE_1, DEATH_IMAGE_2, DEATH_IMAGE_3, DEATH_IMAGE_4, DEATH_IMAGE_5);
+
+    private final List<String> diggingImagesPath = Arrays.asList(DIGGING_IMAGE_1,DIGGING_IMAGE_2);
 
     public Digger(Map map, int x, int y, Gun gun) {
         super(map, x, y);
@@ -106,11 +115,7 @@ public class Digger extends GameObject implements Movable {
         int count = GlobalConstants.CELL_MOVING_PARTS_COUNT;
         double step = (double) GlobalConstants.CELL_SIZE / count;
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(velocityMilliSecond), actionEvent -> {
-            if (!getImagePath().equals(SIMPLE_IMAGE_1)) {
-                setImage(SIMPLE_IMAGE_1);
-            } else if (!getImagePath().equals(SIMPLE_IMAGE_2)) {
-                setImage(SIMPLE_IMAGE_2);
-            }
+            alternateImages(simpleImagesPath);
             getImageView().setLayoutX(Movable.getNextPositionByStep(getImageView().getLayoutX(), realX, step));
             getImageView().setLayoutY(Movable.getNextPositionByStep(getImageView().getLayoutY(), realY, step));
         }));
@@ -131,11 +136,7 @@ public class Digger extends GameObject implements Movable {
         int count = GlobalConstants.CELL_MOVING_PARTS_COUNT;
         double step = (double) GlobalConstants.CELL_SIZE / count;
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(velocityMilliSecond), actionEvent -> {
-            if (!getImagePath().equals(DIGGING_IMAGE_1)) {
-                setImage(DIGGING_IMAGE_1);
-            } else if (!getImagePath().equals(DIGGING_IMAGE_2)) {
-                setImage(DIGGING_IMAGE_2);
-            }
+            alternateImages(diggingImagesPath);
             setRealX(Movable.getNextPositionByStep(getImageView().getLayoutX(), realX, step));
             setRealY(Movable.getNextPositionByStep(getImageView().getLayoutY(), realY, step));
         }));
@@ -174,26 +175,8 @@ public class Digger extends GameObject implements Movable {
 
     public void die() {
         canMove = false;
-        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> {
-            switch (getImagePath()) {
-                case DEATH_1:
-                    setImage(DEATH_2);
-                    break;
-                case DEATH_2:
-                    setImage(DEATH_3);
-                    break;
-                case DEATH_3:
-                    setImage(DEATH_4);
-                    break;
-                case DEATH_4:
-                    setImage(DEATH_5);
-                    break;
-                default:
-                    setImage(DEATH_1);
-                    break;
-            }
-        }),new KeyFrame(Duration.millis(250)));
-        timeline.setCycleCount(6);
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> alternateImages(deathImagesPath)),new KeyFrame(Duration.millis(250)));
+        timeline.setCycleCount(deathImagesPath.size());
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
             getCell().remove(this);

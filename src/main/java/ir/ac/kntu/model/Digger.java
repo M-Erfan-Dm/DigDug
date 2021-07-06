@@ -177,16 +177,17 @@ public class Digger extends GameObject implements Movable {
     }
 
     public void die() {
+        getCell().remove(this);
         canMove = false;
         Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> alternateImages(deathImagesPath)),new KeyFrame(Duration.millis(250)));
         timeline.setCycleCount(deathImagesPath.size());
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
-            getCell().remove(this);
             hideImageView();
             if (onDiggerDeathListener != null) {
                 onDiggerDeathListener.onDeath();
             }
+            getMap().getGame().decrementHealth();
         });
     }
     private void checkObjects(){

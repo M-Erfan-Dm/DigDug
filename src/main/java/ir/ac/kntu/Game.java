@@ -21,6 +21,8 @@ public class Game {
 
     private int level;
 
+    private Map map;
+
     private GameInfoSideLayout gameInfoSideLayout;
 
     private Pane mapLayout;
@@ -28,7 +30,6 @@ public class Game {
     public Game(Pane root, Player player) {
         this.root = root;
         this.player = player;
-        initMapLayout();
         initGameInfoSideLayout();
     }
 
@@ -51,7 +52,9 @@ public class Game {
         gameInfoSideLayout.updateHealth(health);
         if (health == 0) {
             finish();
+            return;
         }
+        loadMap("src/main/resources/map/main_map.txt");
     }
 
     public void incrementScore(int value) {
@@ -74,13 +77,15 @@ public class Game {
     }
 
     private void initMapLayout() {
+        root.getChildren().remove(mapLayout);
         mapLayout = new Pane();
-        root.getChildren().add(mapLayout);
+        root.getChildren().add(0,mapLayout);
     }
 
     private void loadMap(String mapPath) {
+        initMapLayout();
         try {
-            Map map = MapLoader.load(mapPath,this);
+            map = MapLoader.load(mapPath,this);
             map.getDigger().attachKeyboardHandlers(root.getScene());
             map.draw(mapLayout);
         } catch (FileNotFoundException e) {

@@ -21,7 +21,8 @@ public class Fygar extends Enemy {
 
     public Fygar(Map map, int x, int y, Fire fire) {
         super(map, x, y, Arrays.asList(SIMPLE_IMAGE_1,SIMPLE_IMAGE_2),
-                Arrays.asList(DEATH_IMAGE_1,DEATH_IMAGE_2,DEATH_IMAGE_3,DEATH_IMAGE_4), 4);
+                Arrays.asList(DEATH_IMAGE_1,DEATH_IMAGE_2,DEATH_IMAGE_3,DEATH_IMAGE_4),
+                4, GlobalConstants.FYGAR_SCORE);
         this.fire = fire;
         setImage(SIMPLE_IMAGE_1);
         updateRealPos();

@@ -1,5 +1,6 @@
 package ir.ac.kntu.utils;
 
+import ir.ac.kntu.Game;
 import ir.ac.kntu.model.InvalidMapException;
 import ir.ac.kntu.model.Map;
 
@@ -16,7 +17,7 @@ public class MapLoader {
     private MapLoader() {
     }
 
-    public static Map load(String path) throws FileNotFoundException, InvalidMapException {
+    public static Map load(String path, Game game) throws FileNotFoundException, InvalidMapException {
         File file = new File(path);
         Scanner scanner = new Scanner(file);
         int width = scanner.nextInt();
@@ -38,6 +39,6 @@ public class MapLoader {
                 mapArray[i][j] = value;
             }
         }
-        return new Map(width, height, mapArray);
+        return new Map(width, height, mapArray, game);
     }
 }

@@ -17,7 +17,7 @@ public class Pooka extends Enemy {
 
     public Pooka(Map map, int x, int y) {
         super(map, x, y, Arrays.asList(SIMPLE_IMAGE_1,SIMPLE_IMAGE_2),
-                Arrays.asList(DEATH_IMAGE_1,DEATH_IMAGE_2,DEATH_IMAGE_3,DEATH_IMAGE_4), 4);
+                Arrays.asList(DEATH_IMAGE_1,DEATH_IMAGE_2,DEATH_IMAGE_3,DEATH_IMAGE_4), 4, GlobalConstants.POOKA_SCORE);
         setImage(SIMPLE_IMAGE_1);
         updateRealPos();
     }

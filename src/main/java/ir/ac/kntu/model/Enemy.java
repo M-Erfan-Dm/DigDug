@@ -29,12 +29,15 @@ public abstract class Enemy extends GameObject implements Movable {
 
     private int curHealth;
 
-    public Enemy(Map map, int gridX, int gridY, List<String> simpleImagesPath, List<String> deathImagesPath, int totalHealth) {
+    private int score;
+
+    public Enemy(Map map, int gridX, int gridY, List<String> simpleImagesPath, List<String> deathImagesPath, int totalHealth, int score) {
         super(map, gridX, gridY);
         this.simpleImagesPath = simpleImagesPath;
         this.deathImagesPath = deathImagesPath;
         this.totalHealth = totalHealth;
         this.curHealth = totalHealth;
+        this.score = score;
         random = new Random();
     }
 
@@ -82,6 +85,7 @@ public abstract class Enemy extends GameObject implements Movable {
 
     public void die() {
         getCell().remove(this);
+        addScoreToPlayer();
         Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent ->
                 alternateImages(deathImagesPath)),
                 new KeyFrame(Duration.seconds(2)));
@@ -167,5 +171,9 @@ public abstract class Enemy extends GameObject implements Movable {
     public void stopMoving() {
         canMove = false;
         movingAnimation.stop();
+    }
+
+    private void addScoreToPlayer(){
+        getMap().getGame().incrementScore(score);
     }
 }

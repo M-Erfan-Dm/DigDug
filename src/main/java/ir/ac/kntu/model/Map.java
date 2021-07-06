@@ -1,5 +1,6 @@
 package ir.ac.kntu.model;
 
+import ir.ac.kntu.Game;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 
@@ -18,16 +19,19 @@ public class Map {
 
     private Digger digger;
 
+    private Game game;
+
     private ExtraSkillObjectController extraSkillObjectController;
 
-    public Map(int width, int height, int[][] rawMap) {
+    public Map(int width, int height, int[][] rawMap, Game game) {
         this.width = width;
         this.height = height;
+        this.game = game;
         gameObjects = new ArrayList<>();
         createAllGameObjects(rawMap);
     }
 
-    public double getPosition(int pos){
+    public double getPosition(int pos) {
         return pos * GlobalConstants.CELL_SIZE;
     }
 
@@ -43,6 +47,10 @@ public class Map {
         return height;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
     public ExtraSkillObjectController getExtraSkillObjectController() {
         return extraSkillObjectController;
     }
@@ -53,8 +61,8 @@ public class Map {
             for (int j = 0; j < width; j++) {
                 Cell cell = new Cell(j, i);
                 int code = rawMap[i][j];
-                GameObject object = createGameObjectByCode(j,i,code);
-                if (object!=null){
+                GameObject object = createGameObjectByCode(j, i, code);
+                if (object != null) {
                     gameObjects.add(object);
                     cell.add(object);
                 }
@@ -65,63 +73,63 @@ public class Map {
 
     private GameObject createGameObjectByCode(int x, int y, int code) {
         if (GlobalConstants.isCodeOfSoil(code)) {
-            return new Soil(this,x,y,code);
+            return new Soil(this, x, y, code);
         }
         switch (code) {
             case GlobalConstants.DIGGER:
-                if (digger==null){
-                    Gun gun = new Gun(this,x,y);
+                if (digger == null) {
+                    Gun gun = new Gun(this, x, y);
                     gameObjects.add(gun);
                     digger = new Digger(this, x, y, gun);
                     return digger;
                 }
                 return null;
             case GlobalConstants.POOKA:
-                return new Pooka(this,x,y);
+                return new Pooka(this, x, y);
             case GlobalConstants.FYGAR:
-                Fire fire = new Fire(this,x,y);
+                Fire fire = new Fire(this, x, y);
                 gameObjects.add(fire);
-                return new Fygar(this,x,y, fire);
+                return new Fygar(this, x, y, fire);
             case GlobalConstants.STONE:
-                return new Stone(this,x,y);
+                return new Stone(this, x, y);
             default:
                 break;
         }
         return null;
     }
 
-    public Cell getCell(int x,int y){
-        if (isGridCoordinateInMap(x,y)){
+    public Cell getCell(int x, int y) {
+        if (isGridCoordinateInMap(x, y)) {
             return cells[y][x];
         }
         return null;
     }
 
-    public boolean isGridCoordinateInMap(int gridX,int gridY) {
+    public boolean isGridCoordinateInMap(int gridX, int gridY) {
         return gridX >= 0 && gridX < width && gridY >= 0 && gridY < height;
     }
 
-    public List<Point2D> getEmptyPoints(){
+    public List<Point2D> getEmptyPoints() {
         List<Point2D> points = new ArrayList<>();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Cell cell = cells[i][j];
-                if (cell.isEmpty()){
-                    points.add(new Point2D(j,i));
+                if (cell.isEmpty()) {
+                    points.add(new Point2D(j, i));
                 }
             }
         }
         return points;
     }
 
-    public void draw(Pane pane){
+    public void draw(Pane pane) {
         gameObjects.forEach(gameObject -> pane.getChildren().add(gameObject.getImageView()));
-        extraSkillObjectController = new ExtraSkillObjectController(pane,this);
+        extraSkillObjectController = new ExtraSkillObjectController(pane, this);
         extraSkillObjectController.run();
         runGameObjects();
     }
 
-    private void runGameObjects(){
+    private void runGameObjects() {
         gameObjects.stream().filter(gameObject -> gameObject instanceof Enemy)
                 .forEach(gameObject -> ((Enemy) gameObject).run());
     }

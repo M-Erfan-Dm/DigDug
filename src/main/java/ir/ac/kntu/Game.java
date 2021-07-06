@@ -80,7 +80,7 @@ public class Game {
 
     private void loadMap(String mapPath) {
         try {
-            Map map = MapLoader.load(mapPath);
+            Map map = MapLoader.load(mapPath,this);
             map.getDigger().attachKeyboardHandlers(root.getScene());
             map.draw(mapLayout);
         } catch (FileNotFoundException e) {

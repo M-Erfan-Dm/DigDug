@@ -1,6 +1,5 @@
 package ir.ac.kntu.model;
 
-import ir.ac.kntu.Game;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 
@@ -19,14 +18,14 @@ public class Map {
 
     private Digger digger;
 
-    private Game game;
-
     private ExtraSkillObjectController extraSkillObjectController;
 
-    public Map(int width, int height, int[][] rawMap, Game game) {
+    private Level level;
+
+    public Map(int width, int height, int[][] rawMap, Level level) {
         this.width = width;
         this.height = height;
-        this.game = game;
+        this.level = level;
         gameObjects = new ArrayList<>();
         createAllGameObjects(rawMap);
     }
@@ -47,8 +46,8 @@ public class Map {
         return height;
     }
 
-    public Game getGame() {
-        return game;
+    public Level getLevel() {
+        return level;
     }
 
     public ExtraSkillObjectController getExtraSkillObjectController() {
@@ -124,12 +123,12 @@ public class Map {
 
     public void draw(Pane pane) {
         gameObjects.forEach(gameObject -> pane.getChildren().add(gameObject.getImageView()));
-        extraSkillObjectController = new ExtraSkillObjectController(pane, this);
-        extraSkillObjectController.run();
-        runGameObjects();
     }
 
-    private void runGameObjects() {
+    public void runGameObjects(Pane pane) {
+        digger.attachKeyboardHandlers(pane.getScene());
+        extraSkillObjectController = new ExtraSkillObjectController(pane, this);
+        extraSkillObjectController.run();
         gameObjects.stream().filter(gameObject -> gameObject instanceof Enemy)
                 .forEach(gameObject -> ((Enemy) gameObject).run());
     }

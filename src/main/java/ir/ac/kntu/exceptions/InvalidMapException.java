@@ -1,4 +1,4 @@
-package ir.ac.kntu.model;
+package ir.ac.kntu.exceptions;
 
 public class InvalidMapException extends Exception{
     public InvalidMapException() {

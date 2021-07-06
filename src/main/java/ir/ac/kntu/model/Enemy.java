@@ -13,8 +13,6 @@ public abstract class Enemy extends GameObject implements Movable {
 
     private Timeline hitAnimation;
 
-    private boolean firstRun = true;
-
     private final Random random;
 
     private boolean canMove = true;
@@ -87,7 +85,7 @@ public abstract class Enemy extends GameObject implements Movable {
         getCell().remove(this);
         addScoreToPlayer();
         Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent ->
-                alternateImages(deathImagesPath)),
+                setImage(deathImagesPath.get(deathImagesPath.size()-1))),
                 new KeyFrame(Duration.seconds(2)));
         stopMoving();
         if (hitAnimation != null) {
@@ -127,10 +125,6 @@ public abstract class Enemy extends GameObject implements Movable {
             setRealY(point.getY());
         }));
         movingAnimation.setCycleCount(GlobalConstants.CELL_MOVING_PARTS_COUNT);
-        if (firstRun) {
-            movingAnimation.setDelay(Duration.seconds(GlobalConstants.ENEMY_INITIAL_DELAY_SEC));
-        }
-        firstRun = false;
         movingAnimation.play();
         movingAnimation.setOnFinished(actionEvent -> moveOneCell());
     }
@@ -174,6 +168,6 @@ public abstract class Enemy extends GameObject implements Movable {
     }
 
     private void addScoreToPlayer(){
-        getMap().getGame().incrementScore(score);
+        getMap().getLevel().getGame().incrementScore(score);
     }
 }

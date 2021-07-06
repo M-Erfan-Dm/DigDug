@@ -30,11 +30,13 @@ public class GlobalConstants {
 
     public static final int CELL_SIZE = 24;
 
-    public static final int ENEMY_INITIAL_DELAY_SEC = 2;
+    public static final int ENEMY_INITIAL_DELAY_SEC = 5;
 
     public static final int POOKA_SCORE = 800;
 
     public static final int FYGAR_SCORE = 1000;
+
+    public static final int LEVEL_TIME_MIN = 3;
 
     public static boolean isCodeOfSoil(int code) {
         return code == SOIL_1 || code == SOIL_2 ||

@@ -1,7 +1,6 @@
-package ir.ac.kntu;
+package ir.ac.kntu.menu;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -23,6 +22,8 @@ public class GameInfoSideLayout {
 
     private Label levelLabel;
 
+    private Label timerLabel;
+
     public GameInfoSideLayout(VBox root) {
         this.root = root;
         root.setPadding(new Insets(25,0,0,10));
@@ -39,6 +40,7 @@ public class GameInfoSideLayout {
         updateScore(score);
         updateHealth(health);
         updateLevel(level);
+        updateTimer(0,0);
     }
 
     private void initNodes(){
@@ -46,6 +48,7 @@ public class GameInfoSideLayout {
         initScoreLabel();
         initHealthLayout();
         initLevelLabel();
+        initTimerLabel();
     }
 
     public void updateHighScore(int highScore){
@@ -62,6 +65,10 @@ public class GameInfoSideLayout {
 
     public void updateLevel(int level){
         levelLabel.setText("Level : " + level);
+    }
+
+    public void updateTimer(int minute,int second){
+        timerLabel.setText("Time : " + minute + " : " + second);
     }
 
     private void initHighScoreLabel(){
@@ -93,5 +100,11 @@ public class GameInfoSideLayout {
         levelLabel = new Label();
         levelLabel.setTextFill(Color.WHITE);
         root.getChildren().add(levelLabel);
+    }
+
+    private void initTimerLabel(){
+        timerLabel = new Label();
+        timerLabel.setTextFill(Color.WHITE);
+        root.getChildren().add(timerLabel);
     }
 }

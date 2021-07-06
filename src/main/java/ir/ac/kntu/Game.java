@@ -1,13 +1,11 @@
 package ir.ac.kntu;
 
-import ir.ac.kntu.model.InvalidMapException;
-import ir.ac.kntu.model.Map;
+import ir.ac.kntu.menu.GameInfoSideLayout;
+import ir.ac.kntu.model.Level;
 import ir.ac.kntu.model.Player;
-import ir.ac.kntu.utils.MapLoader;
+import ir.ac.kntu.services.CountDownTimer;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-
-import java.io.FileNotFoundException;
 
 public class Game {
 
@@ -19,13 +17,9 @@ public class Game {
 
     private int score;
 
-    private int level;
-
-    private Map map;
+    private Level level;
 
     private GameInfoSideLayout gameInfoSideLayout;
-
-    private Pane mapLayout;
 
     public Game(Pane root, Player player) {
         this.root = root;
@@ -38,7 +32,7 @@ public class Game {
     }
 
     public void start() {
-        loadMap("src/main/resources/map/main_map.txt");
+        initLevel(1);
         showGameInfo();
     }
 
@@ -54,7 +48,9 @@ public class Game {
             finish();
             return;
         }
-        loadMap("src/main/resources/map/main_map.txt");
+        CountDownTimer timer = new CountDownTimer(0, 3);
+        timer.setOnTimerFinishListener(() -> initLevel(1));
+        timer.start();
     }
 
     public void incrementScore(int value) {
@@ -67,7 +63,7 @@ public class Game {
     }
 
     private void showGameInfo() {
-        gameInfoSideLayout.show(player.getHighScore(), score, health, level);
+        gameInfoSideLayout.show(player.getHighScore(), score, health, level.getMapNumber());
     }
 
     private void initGameInfoSideLayout() {
@@ -76,22 +72,17 @@ public class Game {
         root.getChildren().add(vBox);
     }
 
-    private void initMapLayout() {
-        root.getChildren().remove(mapLayout);
-        mapLayout = new Pane();
-        root.getChildren().add(0,mapLayout);
+    private void initLevel(int mapNumber) {
+        if (level != null) {
+            root.getChildren().remove(level.getMapPane());
+        }
+        Pane mapPane = new Pane();
+        level = new Level(this, mapPane, mapNumber);
+        root.getChildren().add(0, mapPane);
+        level.run();
     }
 
-    private void loadMap(String mapPath) {
-        initMapLayout();
-        try {
-            map = MapLoader.load(mapPath,this);
-            map.getDigger().attachKeyboardHandlers(root.getScene());
-            map.draw(mapLayout);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvalidMapException e) {
-            e.printStackTrace();
-        }
+    public void updateTime(int minute,int second){
+        gameInfoSideLayout.updateTimer(minute,second);
     }
 }

@@ -11,6 +11,6 @@ public class Heart extends ExtraSkillObject{
 
     @Override
     public void performSkill() {
-        getMap().getGame().incrementHealth();
+        getMap().getLevel().getGame().incrementHealth();
     }
 }

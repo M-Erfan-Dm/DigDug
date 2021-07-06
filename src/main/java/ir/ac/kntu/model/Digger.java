@@ -187,7 +187,7 @@ public class Digger extends GameObject implements Movable {
             if (onDiggerDeathListener != null) {
                 onDiggerDeathListener.onDeath();
             }
-            getMap().getGame().decrementHealth();
+            getMap().getLevel().getGame().decrementHealth();
         });
     }
     private void checkObjects(){

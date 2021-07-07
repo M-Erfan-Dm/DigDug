@@ -84,7 +84,10 @@ public class Digger extends GameObject implements Movable {
 
     @Override
     public void stopMoving() {
-        movingAnimation.stop();
+        canMove = false;
+        if (movingAnimation!=null) {
+            movingAnimation.stop();
+        }
     }
 
     public void attachKeyboardHandlers(Scene scene) {
@@ -178,7 +181,7 @@ public class Digger extends GameObject implements Movable {
 
     public void die() {
         getCell().remove(this);
-        canMove = false;
+        stopMoving();
         Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> alternateImages(deathImagesPath)),new KeyFrame(Duration.millis(250)));
         timeline.setCycleCount(deathImagesPath.size());
         timeline.play();
@@ -187,7 +190,7 @@ public class Digger extends GameObject implements Movable {
             if (onDiggerDeathListener != null) {
                 onDiggerDeathListener.onDeath();
             }
-            getMap().getLevel().getGame().decrementHealth();
+            getMap().getLevel().finish(LevelState.LOSE);
         });
     }
     private void checkObjects(){

@@ -82,7 +82,9 @@ public class Gun extends GameObject implements Movable {
 
     @Override
     public void stopMoving() {
-        movingAnimation.stop();
+        if (movingAnimation!=null){
+            movingAnimation.stop();
+        }
         hideImageView();
     }
 

@@ -56,7 +56,9 @@ public class Stone extends GameObject implements Movable {
 
     @Override
     public void stopMoving() {
-        fallDownAnimation.stop();
+        if (fallDownAnimation!=null){
+            fallDownAnimation.stop();
+        }
     }
 
     private void checkDiggerAndEnemies() {

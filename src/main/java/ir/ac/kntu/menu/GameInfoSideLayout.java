@@ -1,5 +1,6 @@
 package ir.ac.kntu.menu;
 
+import ir.ac.kntu.model.GlobalConstants;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -9,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 public class GameInfoSideLayout {
 
@@ -24,8 +26,11 @@ public class GameInfoSideLayout {
 
     private Label timerLabel;
 
+    private DecimalFormat decimalFormat;
+
     public GameInfoSideLayout(VBox root) {
         this.root = root;
+        decimalFormat = new DecimalFormat("00");
         root.setPadding(new Insets(25,0,0,10));
         root.setSpacing(30);
         initNodes();
@@ -40,7 +45,6 @@ public class GameInfoSideLayout {
         updateScore(score);
         updateHealth(health);
         updateLevel(level);
-        updateTimer(0,0);
     }
 
     private void initNodes(){
@@ -68,7 +72,7 @@ public class GameInfoSideLayout {
     }
 
     public void updateTimer(int minute,int second){
-        timerLabel.setText("Time : " + minute + " : " + second);
+        timerLabel.setText("Time : " + decimalFormat.format(minute) + " : " + decimalFormat.format(second));
     }
 
     private void initHighScoreLabel(){

@@ -1,6 +1,7 @@
 package ir.ac.kntu;
 
 import ir.ac.kntu.menu.GameInfoSideLayout;
+import ir.ac.kntu.model.GlobalConstants;
 import ir.ac.kntu.model.Level;
 import ir.ac.kntu.model.Player;
 import ir.ac.kntu.services.CountDownTimer;
@@ -13,7 +14,7 @@ public class Game {
 
     private final Player player;
 
-    private int health = 3;
+    private int health = 2;
 
     private int score;
 
@@ -32,7 +33,7 @@ public class Game {
     }
 
     public void start() {
-        initLevel(1);
+        loadNextLevel();
         showGameInfo();
     }
 
@@ -44,12 +45,12 @@ public class Game {
     public void decrementHealth() {
         health--;
         gameInfoSideLayout.updateHealth(health);
-        if (health == 0) {
+        if (health <= 0) {
             finish();
             return;
         }
         CountDownTimer timer = new CountDownTimer(0, 3);
-        timer.setOnTimerFinishListener(() -> initLevel(1));
+        timer.setOnTimerFinishListener(this::repeatLevel);
         timer.start();
     }
 
@@ -59,7 +60,7 @@ public class Game {
     }
 
     public void finish() {
-
+        System.out.println("finished");
     }
 
     private void showGameInfo() {
@@ -72,17 +73,36 @@ public class Game {
         root.getChildren().add(vBox);
     }
 
-    private void initLevel(int mapNumber) {
+    private void loadLevel(int mapNumber) {
         if (level != null) {
             root.getChildren().remove(level.getMapPane());
         }
         Pane mapPane = new Pane();
         level = new Level(this, mapPane, mapNumber);
         root.getChildren().add(0, mapPane);
+        updateTime(GlobalConstants.LEVEL_TIME_MIN, 0);
         level.run();
     }
 
-    public void updateTime(int minute,int second){
-        gameInfoSideLayout.updateTimer(minute,second);
+    public void loadNextLevel() {
+        int nextLevel = 1;
+        if (level != null) {
+            nextLevel = level.getMapNumber() + 1;
+        }
+        if (nextLevel <= GlobalConstants.TOTAL_MAPS) {
+            loadLevel(nextLevel);
+        }else {
+            finish();
+        }
+    }
+
+    private void repeatLevel(){
+        if (level!=null){
+            loadLevel(level.getMapNumber());
+        }
+    }
+
+    public void updateTime(int minute, int second) {
+        gameInfoSideLayout.updateTimer(minute, second);
     }
 }

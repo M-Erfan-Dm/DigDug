@@ -84,6 +84,7 @@ public abstract class Enemy extends GameObject implements Movable {
     public void die() {
         getCell().remove(this);
         addScoreToPlayer();
+        getMap().decrementEnemyCount();
         Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent ->
                 setImage(deathImagesPath.get(deathImagesPath.size()-1))),
                 new KeyFrame(Duration.seconds(2)));
@@ -164,7 +165,9 @@ public abstract class Enemy extends GameObject implements Movable {
     @Override
     public void stopMoving() {
         canMove = false;
-        movingAnimation.stop();
+        if (movingAnimation!=null){
+            movingAnimation.stop();
+        }
     }
 
     private void addScoreToPlayer(){

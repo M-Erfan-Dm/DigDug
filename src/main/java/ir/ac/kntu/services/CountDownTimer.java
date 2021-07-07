@@ -61,9 +61,6 @@ public class CountDownTimer {
                 try {
                     tick(i);
                 } catch (InterruptedException e) {
-                    if (onTimerFinishListener != null) {
-                        onTimerFinishListener.onFinish();
-                    }
                     return;
                 }
             }
@@ -78,8 +75,10 @@ public class CountDownTimer {
     }
 
     public void stop(){
-        thread.interrupt();
-        canRestart = true;
+        if (!thread.isInterrupted()){
+            thread.interrupt();
+            canRestart = true;
+        }
     }
 
     private int convertTimeToSeconds(int minute, int second) {

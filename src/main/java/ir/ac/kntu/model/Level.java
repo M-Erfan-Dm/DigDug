@@ -67,6 +67,8 @@ public class Level {
         switch (mapNumber){
             case 1:
                 return "src/main/resources/map/main_map.txt";
+            case 2:
+                return "src/main/resources/map/map_2.txt";
             default:
                 return null;
         }
@@ -76,9 +78,23 @@ public class Level {
         levelTimer = new CountDownTimer(GlobalConstants.LEVEL_TIME_MIN,0);
         levelTimer.setOnTimerTickListener((min, sec) -> {
             game.updateTime(min,sec);
-            if (sec==50){
-                levelTimer.stop();
-            }
         });
+        levelTimer.setOnTimerFinishListener(() -> finish(LevelState.LOSE));
+    }
+
+    public void finish(LevelState levelState){
+        levelTimer.stop();
+        if (levelState!=null){
+            switch (levelState){
+                case WIN:
+                    CountDownTimer timer = new CountDownTimer(0, 3);
+                    timer.setOnTimerFinishListener(game::loadNextLevel);
+                    timer.start();
+                    break;
+                case LOSE:
+                    game.decrementHealth();
+                    break;
+            }
+        }
     }
 }

@@ -20,12 +20,6 @@ public class GlobalConstants {
 
     public static final int STONE = 8;
 
-    public static final int GUN = 9;
-
-    public static final int HEART = 10;
-
-    public static final int MUSHROOM = 11;
-
     public static final int CELL_MOVING_PARTS_COUNT = 3;
 
     public static final int CELL_SIZE = 24;
@@ -37,6 +31,8 @@ public class GlobalConstants {
     public static final int FYGAR_SCORE = 1000;
 
     public static final int LEVEL_TIME_MIN = 3;
+
+    public static final int TOTAL_MAPS = 2;
 
     public static boolean isCodeOfSoil(int code) {
         return code == SOIL_1 || code == SOIL_2 ||

@@ -14,13 +14,15 @@ public class Map {
 
     private Cell[][] cells;
 
-    private List<GameObject> gameObjects;
+    private final List<GameObject> gameObjects;
 
     private Digger digger;
 
     private ExtraSkillObjectController extraSkillObjectController;
 
     private Level level;
+
+    private int enemiesCount;
 
     public Map(int width, int height, int[][] rawMap, Level level) {
         this.width = width;
@@ -84,8 +86,10 @@ public class Map {
                 }
                 return null;
             case GlobalConstants.POOKA:
+                enemiesCount++;
                 return new Pooka(this, x, y);
             case GlobalConstants.FYGAR:
+                enemiesCount++;
                 Fire fire = new Fire(this, x, y);
                 gameObjects.add(fire);
                 return new Fygar(this, x, y, fire);
@@ -131,5 +135,12 @@ public class Map {
         extraSkillObjectController.run();
         gameObjects.stream().filter(gameObject -> gameObject instanceof Enemy)
                 .forEach(gameObject -> ((Enemy) gameObject).run());
+    }
+
+    public void decrementEnemyCount(){
+        enemiesCount--;
+        if (enemiesCount==0){
+            level.finish(LevelState.WIN);
+        }
     }
 }

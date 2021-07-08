@@ -7,13 +7,13 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.io.File;
 
 public class MainMenu {
-    private Pane root;
+    private StackPane root;
 
     private PlayersService playersService;
 
@@ -27,7 +27,7 @@ public class MainMenu {
 
     private boolean isShowing = false;
 
-    public MainMenu(Pane root, PlayersService playersService) {
+    public MainMenu(StackPane root, PlayersService playersService) {
         this.root = root;
         this.playersService = playersService;
         setBackground();

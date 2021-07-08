@@ -1,10 +1,13 @@
 package ir.ac.kntu;
 
-import ir.ac.kntu.model.Player;
+import ir.ac.kntu.menu.MainMenu;
+import ir.ac.kntu.model.GlobalConstants;
+import ir.ac.kntu.services.PlayersFileIO;
+import ir.ac.kntu.services.PlayersService;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -18,16 +21,13 @@ public class JavaFxApplication extends Application {
     }
 
     public void start(Stage stage) throws Exception {
-        Pane root = new Pane();
+        StackPane root = new StackPane();
         root.setStyle("-fx-border-width: 0 0 5 0;");
+        Scene scene = new Scene(root, GlobalConstants.SCENE_WIDTH, GlobalConstants.SCENE_HEIGHT);
 
-        Scene scene = new Scene(root, 1000, 700, Color.BLACK);
-        scene.getStylesheets().add(new File("src/main/java/ir/ac/kntu/style/SceneStyle.css").toURI().toString());
-        HBox hBox = new HBox();
-        root.getChildren().add(hBox);
-        Player player = new Player("Erfan");
-        Game game = new Game(hBox,player);
-        game.start();
+        PlayersService playersService = new PlayersService(new PlayersFileIO("files/Players"));
+        MainMenu mainMenu = new MainMenu(root, playersService);
+        mainMenu.show();
 
         // Setting stage properties
         stage.initStyle(StageStyle.UTILITY);

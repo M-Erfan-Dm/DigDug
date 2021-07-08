@@ -7,14 +7,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class HighScoresMenu {
 
     private final PlayersService playersService;
 
-    private StackPane root;
+    private Pane root;
 
     public HighScoresMenu(PlayersService playersService) {
         this.playersService = playersService;
@@ -22,7 +22,7 @@ public class HighScoresMenu {
 
     public void show(){
         Stage stage = new Stage();
-        root = new StackPane();
+        root = new Pane();
         Scene scene = new Scene(root,500,500);
         initNodes();
 
@@ -41,7 +41,8 @@ public class HighScoresMenu {
             hBox.getChildren().addAll(usernameLabel,highScoreLabel);
             listView.getItems().add(hBox);
         }
+        listView.setPrefWidth(root.getWidth());
+        listView.setPrefHeight(root.getHeight());
         root.getChildren().add(listView);
-        StackPane.setAlignment(listView, Pos.CENTER);
     }
 }

@@ -8,12 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.Stack;
 
 public class LoginMenu {
     private Stage stage;
@@ -69,13 +68,15 @@ public class LoginMenu {
         messageLabel = new Label();
         VBox vBox = new VBox();
         GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
         gridPane.addRow(0, usernameLabel, usernameTextField);
         gridPane.addRow(1, passwordLabel, passwordTextField);
         vBox.getChildren().addAll(gridPane, messageLabel);
         vBox.setSpacing(40);
         vBox.setAlignment(Pos.CENTER);
         root.getChildren().add(vBox);
-        StackPane.setAlignment(vBox, Pos.TOP_CENTER);
+        StackPane.setAlignment(vBox,Pos.TOP_CENTER);
     }
 
     private void initLoginButton() {
@@ -85,7 +86,7 @@ public class LoginMenu {
         loginButton.setPrefWidth(300);
         loginButton.setOnMouseClicked(mouseEvent -> login());
         root.getChildren().add(loginButton);
-        StackPane.setAlignment(loginButton, Pos.BOTTOM_CENTER);
+        StackPane.setAlignment(loginButton,Pos.BOTTOM_CENTER);
     }
 
     private void login() {

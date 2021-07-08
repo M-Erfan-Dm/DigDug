@@ -81,6 +81,8 @@ public class SignupMenu {
         messageLabel = new Label();
         VBox vBox = new VBox();
         GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
         gridPane.addRow(0, usernameLabel, usernameTextField);
         gridPane.addRow(1, passwordLabel, passwordTextField);
         vBox.getChildren().addAll(gridPane, messageLabel);

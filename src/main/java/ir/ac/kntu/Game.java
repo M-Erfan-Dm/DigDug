@@ -5,8 +5,10 @@ import ir.ac.kntu.model.GlobalConstants;
 import ir.ac.kntu.model.Level;
 import ir.ac.kntu.model.Player;
 import ir.ac.kntu.services.CountDownTimer;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 public class Game {
 
@@ -22,9 +24,11 @@ public class Game {
 
     private GameInfoSideLayout gameInfoSideLayout;
 
-    public Game(Pane root, Player player) {
-        this.root = root;
+    public Game(Scene scene, Player player) {
+        root = new HBox();
         this.player = player;
+        scene.setRoot(root);
+        root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         initGameInfoSideLayout();
     }
 

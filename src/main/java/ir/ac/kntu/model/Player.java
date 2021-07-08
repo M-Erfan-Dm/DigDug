@@ -58,4 +58,14 @@ public class Player implements Serializable {
     public int hashCode() {
         return Objects.hash(username);
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", totalGamesCount=" + totalGamesCount +
+                ", highScore=" + highScore +
+                '}';
+    }
 }

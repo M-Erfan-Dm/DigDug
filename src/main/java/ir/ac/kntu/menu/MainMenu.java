@@ -68,7 +68,7 @@ public class MainMenu {
             LoginMenu loginMenu = new LoginMenu(playersService);
             loginMenu.setOnPlayerLoginListener(player -> {
                 root.getChildren().clear();
-                PlayerMainMenu playerMainMenu = new PlayerMainMenu(player,root.getScene());
+                PlayerMainMenu playerMainMenu = new PlayerMainMenu(player,root.getScene(), playersService);
                 playerMainMenu.show();
             });
             loginMenu.show();

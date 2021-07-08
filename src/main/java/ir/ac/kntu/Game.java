@@ -5,6 +5,7 @@ import ir.ac.kntu.model.GlobalConstants;
 import ir.ac.kntu.model.Level;
 import ir.ac.kntu.model.Player;
 import ir.ac.kntu.services.CountDownTimer;
+import ir.ac.kntu.services.PlayersService;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
@@ -24,7 +25,10 @@ public class Game {
 
     private GameInfoSideLayout gameInfoSideLayout;
 
-    public Game(Scene scene, Player player) {
+    private PlayersService playersService;
+
+    public Game(Scene scene, Player player, PlayersService playersService) {
+        this.playersService = playersService;
         root = new HBox();
         this.player = player;
         scene.setRoot(root);
@@ -65,6 +69,7 @@ public class Game {
 
     public void finish() {
         System.out.println("finished");
+        evaluateScore();
     }
 
     private void showGameInfo() {
@@ -108,5 +113,12 @@ public class Game {
 
     public void updateTime(int minute, int second) {
         gameInfoSideLayout.updateTimer(minute, second);
+    }
+
+    private void evaluateScore(){
+        if (score > player.getHighScore()){
+            player.setHighScore(score);
+            playersService.add(player);
+        }
     }
 }

@@ -1,10 +1,10 @@
 package ir.ac.kntu.services;
 
 import ir.ac.kntu.model.Player;
+import ir.ac.kntu.utils.PlayersHighScoreComparator;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PlayersService {
     private final PlayersIODao playersIODao;
@@ -18,6 +18,12 @@ public class PlayersService {
 
     public List<Player> getPlayers() {
         return new ArrayList<>(players);
+    }
+
+    public List<Player> getPlayersByHighScore(boolean isAscending){
+        List<Player> sortedPlayers = new ArrayList<>(players);
+        sortedPlayers.sort(new PlayersHighScoreComparator(isAscending));
+        return sortedPlayers;
     }
 
     public void add(Player player) {

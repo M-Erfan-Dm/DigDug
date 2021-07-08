@@ -2,6 +2,7 @@ package ir.ac.kntu.menu;
 
 import ir.ac.kntu.Game;
 import ir.ac.kntu.model.Player;
+import ir.ac.kntu.services.PlayersService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -17,8 +18,11 @@ public class PlayerMainMenu {
 
     private final StackPane root;
 
-    public PlayerMainMenu(Player player, Scene scene) {
+    private PlayersService playersService;
+
+    public PlayerMainMenu(Player player, Scene scene, PlayersService playersService) {
         this.player = player;
+        this.playersService = playersService;
         this.root = new StackPane();
         scene.setRoot(this.root);
         this.root.setPadding(new Insets(50,50,50,50));
@@ -67,7 +71,7 @@ public class PlayerMainMenu {
 
     private void startGame(){
         root.getChildren().clear();
-        Game game = new Game(root.getScene(),player);
+        Game game = new Game(root.getScene(),player, playersService);
         game.start();
     }
 }

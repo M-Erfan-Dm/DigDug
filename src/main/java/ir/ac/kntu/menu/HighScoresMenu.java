@@ -2,7 +2,6 @@ package ir.ac.kntu.menu;
 
 import ir.ac.kntu.model.Player;
 import ir.ac.kntu.services.PlayersService;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -33,7 +32,7 @@ public class HighScoresMenu {
 
     private void initNodes(){
         ListView<HBox> listView = new ListView<>();
-        for (Player player : playersService.getPlayers()){
+        for (Player player : playersService.getPlayersByHighScore(false)){
             HBox hBox = new HBox();
             hBox.setSpacing(50);
             Label usernameLabel = new Label("Player : " + player.getUsername());

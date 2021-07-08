@@ -85,7 +85,7 @@ public class ExtraSkillObjectController {
         }
     }
 
-    private void cancelTimer() {
+    public void cancelTimer() {
         timer.stop();
     }
 }

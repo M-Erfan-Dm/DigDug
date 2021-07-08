@@ -5,9 +5,13 @@ import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
-public class Fire extends GameObject{
+public class Fire extends GameObject implements Movable{
 
     private static final String FYGAR_FIRE = "src/main/resources/assets/fygar_fire.png";
+
+    private Fygar fygar;
+
+    Timeline firingAnimation;
 
     public Fire(Map map, int gridX, int gridY) {
         super(map, gridX, gridY);
@@ -20,6 +24,7 @@ public class Fire extends GameObject{
         if (fygar.getDirection() == null) {
             return;
         }
+        this.fygar = fygar;
         fygar.stopMoving();
         setGridX(gridX);
         setGridY(gridY);
@@ -27,21 +32,7 @@ public class Fire extends GameObject{
         setDirection(fygar.getDirection());
         updateViewDirection();
         showImageView();
-        double step = (double) GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        int count = 3 * GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> {
-            showAndHideFire();
-            Point2D nextPoint = getNextPoint(getRealX(), getRealY(), step, getDirection());
-            setRealX(nextPoint.getX());
-            setRealY(nextPoint.getY());
-        }), new KeyFrame(Duration.millis(150)));
-        timeline.setCycleCount(count);
-        timeline.play();
-        checkDigger();
-        timeline.setOnFinished(actionEvent -> {
-            fygar.run();
-            hideImageView();
-        });
+        moveOneCell();
     }
 
     private void checkDigger() {
@@ -61,4 +52,30 @@ public class Fire extends GameObject{
         }
     }
 
+    @Override
+    public void moveOneCell() {
+        int count = 3 * GlobalConstants.CELL_MOVING_PARTS_COUNT;
+        double step = (double) GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
+        firingAnimation = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> {
+            showAndHideFire();
+            Point2D nextPoint = getNextPoint(getRealX(), getRealY(), step, getDirection());
+            setRealX(nextPoint.getX());
+            setRealY(nextPoint.getY());
+        }), new KeyFrame(Duration.millis(150)));
+        firingAnimation.setCycleCount(count);
+        firingAnimation.play();
+        checkDigger();
+        firingAnimation.setOnFinished(actionEvent -> {
+            fygar.run();
+            hideImageView();
+        });
+    }
+
+    @Override
+    public void stopMoving() {
+        if (firingAnimation!=null){
+            firingAnimation.stop();
+        }
+        hideImageView();
+    }
 }

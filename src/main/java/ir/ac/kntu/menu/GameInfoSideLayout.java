@@ -79,6 +79,10 @@ public class GameInfoSideLayout {
         timerLabel.setText("Time : " + decimalFormat.format(minute) + " : " + decimalFormat.format(second));
     }
 
+    public void changeTimerToWarningState(){
+        timerLabel.setTextFill(Color.rgb(190,28,28));
+    }
+
     private void initHighScoreLabel(){
         highScoreLabel = new Label();
         highScoreLabel.setTextFill(Color.WHITE);
@@ -96,7 +100,7 @@ public class GameInfoSideLayout {
         healthLayout.setSpacing(10);
         healthLabel = new Label();
         healthLabel.setTextFill(Color.WHITE);
-        String imagePath = new File("src/main/resources/assets/digger_simple1.png").toURI().toString();
+        String imagePath = new File("src/main/resources/assets/heart.png").toURI().toString();
         Image image = new Image(imagePath,
                 30,30,false,false);
         ImageView imageView = new ImageView(image);

@@ -36,7 +36,7 @@ public class Cell {
         gameObjects.remove(gameObject);
     }
 
-    public <T extends GameObject> List<T> getAllObjectsByType(Class<T> gameObjectType) {
+    public <T> List<T> getAllObjectsByType(Class<T> gameObjectType) {
         return gameObjects.stream().filter(gameObjectType::isInstance)
                 .map(gameObjectType::cast).collect(Collectors.toList());
     }
@@ -59,7 +59,10 @@ public class Cell {
     }
 
     public boolean isEmpty() {
-        return gameObjects.isEmpty() || (!hasObjectType(Soil.class)
-                && !hasObjectType(Stone.class));
+        return gameObjects.isEmpty() || !hasBlock();
+    }
+
+    public boolean hasBlock(){
+        return hasObjectType(Soil.class) || hasObjectType(Stone.class);
     }
 }

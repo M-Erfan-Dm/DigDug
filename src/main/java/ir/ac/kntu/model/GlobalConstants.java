@@ -38,6 +38,8 @@ public class GlobalConstants {
 
     public static final int SCENE_HEIGHT = 700;
 
+    public static final int TOTAL_HEALTH = 3;
+
     public static boolean isCodeOfSoil(int code) {
         return code == SOIL_1 || code == SOIL_2 ||
                 code == SOIL_3 || code == SOIL_4;

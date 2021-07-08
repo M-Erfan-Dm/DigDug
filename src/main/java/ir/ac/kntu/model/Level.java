@@ -73,11 +73,16 @@ public class Level {
         levelTimer = new CountDownTimer(GlobalConstants.LEVEL_TIME_MIN,0);
         levelTimer.setOnTimerTickListener((min, sec) -> {
             game.updateTime(min,sec);
+            if (min==2 && sec==50){
+                game.getGameInfoSideLayout().changeTimerToWarningState();
+                map.setEnemiesCanEscape(true);
+            }
         });
         levelTimer.setOnTimerFinishListener(() -> finish(LevelState.LOSE));
     }
 
     public void finish(LevelState levelState){
+        map.stopAllObjects();
         levelTimer.stop();
         if (levelState!=null){
             switch (levelState){

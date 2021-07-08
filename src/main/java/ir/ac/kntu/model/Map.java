@@ -1,10 +1,12 @@
 package ir.ac.kntu.model;
 
+import ir.ac.kntu.services.EnemyAIService;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Map {
 
@@ -14,8 +16,6 @@ public class Map {
 
     private Cell[][] cells;
 
-    private final List<GameObject> gameObjects;
-
     private Digger digger;
 
     private ExtraSkillObjectController extraSkillObjectController;
@@ -24,11 +24,15 @@ public class Map {
 
     private int enemiesCount;
 
+    private boolean enemiesCanEscape = false;
+
+    private final EnemyAIService enemyAIService;
+
     public Map(int width, int height, int[][] rawMap, Level level) {
         this.width = width;
         this.height = height;
         this.level = level;
-        gameObjects = new ArrayList<>();
+        enemyAIService = new EnemyAIService();
         createAllGameObjects(rawMap);
     }
 
@@ -52,6 +56,18 @@ public class Map {
         return level;
     }
 
+    public boolean canEnemiesEscape() {
+        return enemiesCanEscape;
+    }
+
+    public void setEnemiesCanEscape(boolean enemiesCanEscape) {
+        this.enemiesCanEscape = enemiesCanEscape;
+    }
+
+    public EnemyAIService getEnemyAIService() {
+        return enemyAIService;
+    }
+
     public ExtraSkillObjectController getExtraSkillObjectController() {
         return extraSkillObjectController;
     }
@@ -61,13 +77,12 @@ public class Map {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Cell cell = new Cell(j, i);
+                cells[i][j] = cell;
                 int code = rawMap[i][j];
                 GameObject object = createGameObjectByCode(j, i, code);
                 if (object != null) {
-                    gameObjects.add(object);
                     cell.add(object);
                 }
-                cells[i][j] = cell;
             }
         }
     }
@@ -80,7 +95,7 @@ public class Map {
             case GlobalConstants.DIGGER:
                 if (digger == null) {
                     Gun gun = new Gun(this, x, y);
-                    gameObjects.add(gun);
+                    cells[y][x].add(gun);
                     digger = new Digger(this, x, y, gun);
                     return digger;
                 }
@@ -91,7 +106,7 @@ public class Map {
             case GlobalConstants.FYGAR:
                 enemiesCount++;
                 Fire fire = new Fire(this, x, y);
-                gameObjects.add(fire);
+                cells[y][x].add(fire);
                 return new Fygar(this, x, y, fire);
             case GlobalConstants.STONE:
                 return new Stone(this, x, y);
@@ -126,14 +141,15 @@ public class Map {
     }
 
     public void draw(Pane pane) {
-        gameObjects.forEach(gameObject -> pane.getChildren().add(gameObject.getImageView()));
+        getAllObjectsByType(GameObject.class).
+                forEach(gameObject -> pane.getChildren().add(gameObject.getImageView()));
     }
 
     public void runGameObjects(Pane pane) {
         digger.attachKeyboardHandlers(pane.getScene());
         extraSkillObjectController = new ExtraSkillObjectController(pane, this);
         extraSkillObjectController.run();
-        gameObjects.stream().filter(gameObject -> gameObject instanceof Enemy)
+        getAllObjectsByType(GameObject.class).stream().filter(gameObject -> gameObject instanceof Enemy)
                 .forEach(gameObject -> ((Enemy) gameObject).run());
     }
 
@@ -142,5 +158,21 @@ public class Map {
         if (enemiesCount==0){
             level.finish(LevelState.WIN);
         }
+    }
+
+    public void stopAllObjects(){
+        getAllObjectsByType(Movable.class).forEach(Movable::stopMoving);
+        extraSkillObjectController.cancelTimer();
+    }
+
+    private <T> List<T> getAllObjectsByType(Class<T> gameObjectType){
+        List<T> objects = new ArrayList<>();
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                Cell cell = cells[i][j];
+                objects.addAll(cell.getAllObjectsByType(gameObjectType));
+            }
+        }
+        return objects;
     }
 }

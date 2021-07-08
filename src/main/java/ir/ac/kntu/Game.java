@@ -17,7 +17,7 @@ public class Game {
 
     private final Player player;
 
-    private int health = 2;
+    private int health = GlobalConstants.TOTAL_HEALTH;
 
     private int score;
 
@@ -74,7 +74,6 @@ public class Game {
     }
 
     public void finish() {
-
         evaluateScore();
     }
 

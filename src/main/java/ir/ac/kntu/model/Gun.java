@@ -113,7 +113,9 @@ public class Gun extends GameObject implements Movable {
     }
 
     private void stopGun(){
-        movingAnimation.stop();
+        if (movingAnimation!=null){
+            movingAnimation.stop();
+        }
         hideImageView();
         movedCellsCounter = 0;
         if (onGunShootingFinishListener!=null){

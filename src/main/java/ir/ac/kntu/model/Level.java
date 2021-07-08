@@ -44,12 +44,7 @@ public class Level {
             return;
         }
         loadMap(mapPath);
-        CountDownTimer timer = new CountDownTimer(0,GlobalConstants.ENEMY_INITIAL_DELAY_SEC);
-        timer.setOnTimerFinishListener(() -> {
-            map.runGameObjects(mapPane);
-            levelTimer.start();
-        });
-        timer.start();
+        startInitialDelayTimer();
     }
 
     private void loadMap(String mapPath) {
@@ -87,6 +82,7 @@ public class Level {
         if (levelState!=null){
             switch (levelState){
                 case WIN:
+                    game.getGameInfoSideLayout().printGameWin();
                     CountDownTimer timer = new CountDownTimer(0, 3);
                     timer.setOnTimerFinishListener(game::loadNextLevel);
                     timer.start();
@@ -96,5 +92,16 @@ public class Level {
                     break;
             }
         }
+    }
+
+    private void startInitialDelayTimer(){
+        CountDownTimer timer = new CountDownTimer(0,GlobalConstants.ENEMY_INITIAL_DELAY_SEC);
+        timer.setOnTimerTickListener((min, sec) -> game.getGameInfoSideLayout().printInitialDelay(sec));
+        timer.setOnTimerFinishListener(() -> {
+            game.getGameInfoSideLayout().clearMessage();
+            map.runGameObjects(mapPane);
+            levelTimer.start();
+        });
+        timer.start();
     }
 }

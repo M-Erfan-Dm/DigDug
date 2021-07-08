@@ -40,6 +40,10 @@ public class Game {
         return player;
     }
 
+    public GameInfoSideLayout getGameInfoSideLayout() {
+        return gameInfoSideLayout;
+    }
+
     public void start() {
         loadNextLevel();
         showGameInfo();
@@ -53,12 +57,14 @@ public class Game {
     public void decrementHealth() {
         health--;
         gameInfoSideLayout.updateHealth(health);
-        if (health <= 0) {
-            finish();
-            return;
-        }
         CountDownTimer timer = new CountDownTimer(0, 3);
-        timer.setOnTimerFinishListener(this::repeatLevel);
+        if (health <= 0) {
+            gameInfoSideLayout.printGameOver();
+            timer.setOnTimerFinishListener(this::finish);
+        }else {
+            gameInfoSideLayout.printGameLose();
+            timer.setOnTimerFinishListener(this::repeatLevel);
+        }
         timer.start();
     }
 
@@ -68,7 +74,7 @@ public class Game {
     }
 
     public void finish() {
-        System.out.println("finished");
+
         evaluateScore();
     }
 
@@ -94,12 +100,14 @@ public class Game {
     }
 
     public void loadNextLevel() {
+        gameInfoSideLayout.clearMessage();
         int nextLevel = 1;
         if (level != null) {
             nextLevel = level.getMapNumber() + 1;
         }
         if (nextLevel <= GlobalConstants.TOTAL_MAPS) {
             loadLevel(nextLevel);
+            gameInfoSideLayout.updateLevel(nextLevel);
         }else {
             finish();
         }

@@ -2,6 +2,7 @@ package ir.ac.kntu.menu;
 
 import ir.ac.kntu.model.GlobalConstants;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,7 +27,9 @@ public class GameInfoSideLayout {
 
     private Label timerLabel;
 
-    private DecimalFormat decimalFormat;
+    private Label messageLabel;
+
+    private final DecimalFormat decimalFormat;
 
     public GameInfoSideLayout(VBox root) {
         this.root = root;
@@ -53,6 +56,7 @@ public class GameInfoSideLayout {
         initHealthLayout();
         initLevelLabel();
         initTimerLabel();
+        initMessageLabel();
     }
 
     public void updateHighScore(int highScore){
@@ -110,5 +114,35 @@ public class GameInfoSideLayout {
         timerLabel = new Label();
         timerLabel.setTextFill(Color.WHITE);
         root.getChildren().add(timerLabel);
+    }
+
+    private void initMessageLabel(){
+        messageLabel = new Label();
+        messageLabel.setAlignment(Pos.CENTER);
+        root.getChildren().add(messageLabel);
+    }
+
+    public void printGameOver(){
+        messageLabel.setText("Game Over");
+        messageLabel.setStyle("-fx-text-fill: #be1c1c;-fx-font-size: 25px");
+    }
+
+    public void printGameLose(){
+        messageLabel.setText("You Lost");
+        messageLabel.setStyle("-fx-text-fill: #be1c1c;-fx-font-size: 25px");
+    }
+
+    public void printGameWin(){
+        messageLabel.setText("You Won");
+        messageLabel.setStyle("-fx-text-fill: #43d21e;-fx-font-size: 25px");
+    }
+
+    public void clearMessage(){
+        messageLabel.setText("");
+    }
+
+    public void printInitialDelay(int second){
+        messageLabel.setText(decimalFormat.format(second));
+        messageLabel.setStyle("-fx-text-fill: #be1c1c;-fx-font-size: 25px");
     }
 }

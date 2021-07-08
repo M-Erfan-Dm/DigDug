@@ -92,6 +92,9 @@ public abstract class Enemy extends GameObject implements Movable {
         if (hitAnimation != null) {
             hitAnimation.stop();
         }
+        if (movingAnimation!=null){
+            movingAnimation.stop();
+        }
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
             hideImageView();

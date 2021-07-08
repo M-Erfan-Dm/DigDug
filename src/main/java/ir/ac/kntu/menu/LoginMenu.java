@@ -15,12 +15,10 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
-public class SignupMenu {
-    private final PlayersService playersService;
-
+public class LoginMenu {
     private Stage stage;
 
-    private StackPane root;
+    StackPane root;
 
     private Label usernameLabel;
 
@@ -30,14 +28,20 @@ public class SignupMenu {
 
     private TextField passwordTextField;
 
-    private Button signupButton;
-
-    private Button cancelButton;
-
     private Label messageLabel;
 
-    public SignupMenu(PlayersService playersService) {
+    private Button loginButton;
+
+    private final PlayersService playersService;
+
+    private OnPlayerLoginListener onPlayerLoginListener;
+
+    public LoginMenu(PlayersService playersService) {
         this.playersService = playersService;
+    }
+
+    public void setOnPlayerLoginListener(OnPlayerLoginListener onPlayerLoginListener) {
+        this.onPlayerLoginListener = onPlayerLoginListener;
     }
 
     public void show() {
@@ -45,32 +49,16 @@ public class SignupMenu {
         root = new StackPane();
         root.setPadding(new Insets(50, 50, 50, 50));
         Scene scene = new Scene(root, 500, 500);
-        initNodes();
 
+        initNodes();
+        stage.setTitle("Login");
         stage.setScene(scene);
-        stage.setTitle("Sign Up");
         stage.show();
     }
 
     private void initNodes() {
-        initSignupButton();
-        initCancelButton();
         initFields();
-        root.getChildren().addAll(signupButton, cancelButton);
-    }
-
-    private void initSignupButton() {
-        signupButton = new Button("Sign Up");
-        setButtonStyle(signupButton);
-        StackPane.setAlignment(signupButton, Pos.BOTTOM_RIGHT);
-        signupButton.setOnMouseClicked(mouseEvent -> signup());
-    }
-
-    private void initCancelButton() {
-        cancelButton = new Button("Cancel");
-        setButtonStyle(cancelButton);
-        StackPane.setAlignment(cancelButton, Pos.BOTTOM_LEFT);
-        cancelButton.setOnMouseClicked(mouseEvent -> stage.close());
+        initLoginButton();
     }
 
     private void initFields() {
@@ -87,31 +75,37 @@ public class SignupMenu {
         vBox.setSpacing(40);
         vBox.setAlignment(Pos.CENTER);
         root.getChildren().add(vBox);
-        StackPane.setAlignment(vBox, Pos.CENTER);
+        StackPane.setAlignment(vBox, Pos.TOP_CENTER);
     }
 
-
-    private void setButtonStyle(Button button) {
-        button.getStylesheets().add(new File(
+    private void initLoginButton() {
+        loginButton = new Button("Login");
+        loginButton.getStylesheets().add(new File(
                 "src/main/java/ir/ac/kntu/style/Button.css").toURI().toString());
-        button.setPrefWidth(100);
+        loginButton.setPrefWidth(300);
+        loginButton.setOnMouseClicked(mouseEvent -> login());
+        root.getChildren().add(loginButton);
+        StackPane.setAlignment(loginButton, Pos.BOTTOM_CENTER);
     }
 
-    private void signup() {
+    private void login() {
         String username = usernameTextField.getText();
         String password = passwordTextField.getText();
-        if (username.isBlank() || password.isBlank()) {
+        if (username.isBlank() || password.isBlank()){
             messageLabel.setText("Invalid data");
             return;
         }
-        boolean playerExists = playersService.contains(username);
-        if (playerExists) {
-            messageLabel.setText("Username already exists");
+        boolean isPlayerAuthorized = playersService.isPlayerAuthorized(username,password);
+        if (!isPlayerAuthorized){
+            messageLabel.setText("Player not found");
             return;
         }
-        Player player = new Player(username, password);
-        playersService.add(player);
-        messageLabel.setText("User is registered :)");
+        Player player = playersService.getPlayer(username);
+        if (onPlayerLoginListener!=null){
+            onPlayerLoginListener.onLogin(player);
+        }
+        stage.close();
     }
+
 
 }

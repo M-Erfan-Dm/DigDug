@@ -71,7 +71,13 @@ public class PlayerMainMenu {
 
     private void startGame(){
         root.getChildren().clear();
+        incrementPlayedGamesCount();
         Game game = new Game(root.getScene(),player, playersService);
         game.start();
+    }
+
+    private void incrementPlayedGamesCount(){
+        player.incrementTotalGamesCount();
+        playersService.add(player);
     }
 }

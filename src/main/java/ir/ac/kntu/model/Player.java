@@ -1,22 +1,29 @@
 package ir.ac.kntu.model;
 
-public class Player {
-    private String name;
+import java.io.Serializable;
+import java.util.Objects;
+
+public class Player implements Serializable {
+
+    private final String username;
+
+    private final String password;
 
     private int totalGamesCount;
 
     private int highScore;
 
-    public Player(String name) {
-        this.name = name;
+    public Player(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPassword() {
+        return password;
     }
 
     public int getTotalGamesCount() {
@@ -33,5 +40,22 @@ public class Player {
 
     public void setHighScore(int highScore) {
         this.highScore = highScore;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o){
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()){
+            return false;
+        }
+        Player player = (Player) o;
+        return username.equals(player.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
     }
 }

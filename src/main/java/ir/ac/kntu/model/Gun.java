@@ -6,8 +6,6 @@ import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Gun extends GameObject implements Movable {
     private static final String GUN_IMAGE = "src/main/resources/assets/digger_gun.png";
@@ -25,7 +23,7 @@ public class Gun extends GameObject implements Movable {
     private int movedCellsCounter;
 
     public Gun(Map map, int gridX, int gridY) {
-        super(map, gridX, gridY);
+        super(map, gridX, gridY, null);
         setImage(GUN_IMAGE);
         getImageView().setVisible(false);
     }

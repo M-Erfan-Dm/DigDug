@@ -14,7 +14,7 @@ public class Fire extends GameObject implements Movable{
     Timeline firingAnimation;
 
     public Fire(Map map, int gridX, int gridY) {
-        super(map, gridX, gridY);
+        super(map, gridX, gridY, null);
 
         setImage(FYGAR_FIRE);
         hideImageView();

@@ -30,8 +30,8 @@ public abstract class Enemy extends GameObject implements Movable {
 
     private int score;
 
-    public Enemy(Map map, int gridX, int gridY, List<String> simpleImagesPath, List<String> deathImagesPath, int totalHealth, int score) {
-        super(map, gridX, gridY);
+    public Enemy(Map map, int gridX, int gridY, List<String> simpleImagesPath, List<String> deathImagesPath, int totalHealth, int score, Integer numericalMapCode) {
+        super(map, gridX, gridY, numericalMapCode);
         this.simpleImagesPath = simpleImagesPath;
         this.deathImagesPath = deathImagesPath;
         this.totalHealth = totalHealth;

@@ -17,7 +17,7 @@ public class Stone extends GameObject implements Movable {
     private Timeline fallDownAnimation;
 
     public Stone(Map map, int x, int y) {
-        super(map, x, y);
+        super(map, x, y, GlobalConstants.STONE);
         setImage(IMAGE);
         updateRealPos();
     }

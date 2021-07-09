@@ -49,7 +49,7 @@ public class Digger extends GameObject implements Movable {
     private Timeline movingAnimation;
 
     public Digger(Map map, int x, int y, Gun gun) {
-        super(map, x, y);
+        super(map, x, y, GlobalConstants.DIGGER);
         this.gun = gun;
         updateRealPos();
         setDirection(Direction.RIGHT);

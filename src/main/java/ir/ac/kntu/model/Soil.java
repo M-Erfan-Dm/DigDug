@@ -1,17 +1,11 @@
 package ir.ac.kntu.model;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-
-import java.io.File;
-
 public class Soil extends GameObject {
 
     private int type;
 
-    public Soil(Map map, int x,int y,int type) {
-        super(map,x,y);
+    public Soil(Map map, int x, int y, int type) {
+        super(map, x, y, type);
         this.type = getValidType(type);
         updateImageByType();
         updateRealPos();
@@ -51,8 +45,8 @@ public class Soil extends GameObject {
         return GlobalConstants.SOIL_1;
     }
 
-    public void destroy(){
-        getMap().getCell(getGridX(),getGridY()).remove(this);
+    public void destroy() {
+        getMap().getCell(getGridX(), getGridY()).remove(this);
         getImageView().setVisible(false);
     }
 }

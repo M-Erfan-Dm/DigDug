@@ -9,6 +9,8 @@ import java.util.List;
 
 public abstract class GameObject {
 
+    private Integer numericalMapCode;
+
     private final Map map;
 
     private int gridX;
@@ -21,10 +23,11 @@ public abstract class GameObject {
 
     private Direction direction;
 
-    public GameObject(Map map, int gridX, int gridY) {
+    public GameObject(Map map, int gridX, int gridY, Integer numericalMapCode) {
         this.map = map;
         this.gridX = gridX;
         this.gridY = gridY;
+        this.numericalMapCode = numericalMapCode;
         imageView = new ImageView();
     }
 
@@ -70,6 +73,10 @@ public abstract class GameObject {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public Integer getNumericalMapCode() {
+        return numericalMapCode;
     }
 
     public void setDirection(Direction direction) {
@@ -183,4 +190,5 @@ public abstract class GameObject {
     public Cell getCell(){
         return map.getCell(gridX,gridY);
     }
+
 }

@@ -3,7 +3,7 @@ package ir.ac.kntu.model;
 public abstract class ExtraSkillObject extends GameObject{
 
     public ExtraSkillObject(Map map, int gridX, int gridY) {
-        super(map, gridX, gridY);
+        super(map, gridX, gridY, null);
     }
 
     abstract public void performSkill();

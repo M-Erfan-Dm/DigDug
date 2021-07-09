@@ -79,6 +79,10 @@ public class GameInfoSideLayout {
         timerLabel.setText("Time : " + decimalFormat.format(minute) + " : " + decimalFormat.format(second));
     }
 
+    public void changeTimerToNormalState(){
+        timerLabel.setTextFill(Color.WHITE);
+    }
+
     public void changeTimerToWarningState(){
         timerLabel.setTextFill(Color.rgb(190,28,28));
     }

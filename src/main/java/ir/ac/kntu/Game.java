@@ -1,6 +1,7 @@
 package ir.ac.kntu;
 
 import ir.ac.kntu.menu.GameInfoSideLayout;
+import ir.ac.kntu.menu.PlayerMainMenu;
 import ir.ac.kntu.model.GlobalConstants;
 import ir.ac.kntu.model.Level;
 import ir.ac.kntu.model.Player;
@@ -75,6 +76,7 @@ public class Game {
 
     public void finish() {
         evaluateScore();
+        goToPlayerMainMenu();
     }
 
     private void showGameInfo() {
@@ -91,6 +93,7 @@ public class Game {
         if (level != null) {
             root.getChildren().remove(level.getMapPane());
         }
+        gameInfoSideLayout.changeTimerToNormalState();
         Pane mapPane = new Pane();
         level = new Level(this, mapPane, mapNumber);
         root.getChildren().add(0, mapPane);
@@ -127,5 +130,11 @@ public class Game {
             player.setHighScore(score);
             playersService.add(player);
         }
+    }
+
+    private void goToPlayerMainMenu(){
+        root.getChildren().clear();
+        PlayerMainMenu playerMainMenu = new PlayerMainMenu(player,root.getScene(),playersService);
+        playerMainMenu.show();
     }
 }

@@ -2,8 +2,10 @@ package ir.ac.kntu.model;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
 import javafx.util.Duration;
 
 import java.util.Arrays;
@@ -91,7 +93,7 @@ public class Digger extends GameObject implements Movable {
     }
 
     public void attachKeyboardHandlers(Scene scene) {
-        scene.setOnKeyPressed(keyEvent -> {
+        scene.addEventFilter(KeyEvent.ANY,keyEvent -> {
             if (canMove) {
                 switch (keyEvent.getCode()) {
                     case UP:

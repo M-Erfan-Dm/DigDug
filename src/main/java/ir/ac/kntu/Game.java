@@ -6,6 +6,8 @@ import ir.ac.kntu.model.GlobalConstants;
 import ir.ac.kntu.model.Level;
 import ir.ac.kntu.model.Player;
 import ir.ac.kntu.services.CountDownTimer;
+import ir.ac.kntu.services.GameSaveInstance;
+import ir.ac.kntu.services.GameSaveInstanceService;
 import ir.ac.kntu.services.PlayersService;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -26,15 +28,26 @@ public class Game {
 
     private GameInfoSideLayout gameInfoSideLayout;
 
-    private PlayersService playersService;
+    private final PlayersService playersService;
 
-    public Game(Scene scene, Player player, PlayersService playersService) {
+    private final GameSaveInstanceService saveInstanceService;
+
+    public Game(Scene scene, Player player, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
         this.playersService = playersService;
+        this.saveInstanceService = saveInstanceService;
         root = new HBox();
         this.player = player;
         scene.setRoot(root);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         initGameInfoSideLayout();
+    }
+
+    public Game(Scene scene, GameSaveInstance gameSaveInstance, PlayersService playersService,
+                GameSaveInstanceService saveInstanceService) {
+        this(scene, gameSaveInstance.getPlayer(), playersService, saveInstanceService);
+        health = gameSaveInstance.getHealth();
+        score = gameSaveInstance.getScore();
+        loadLevelFromGameSaveInstance(gameSaveInstance);
     }
 
     public Player getPlayer() {
@@ -46,7 +59,11 @@ public class Game {
     }
 
     public void start() {
-        loadNextLevel();
+        if (level != null) {
+            level.run();
+        } else {
+            loadNextLevel();
+        }
         showGameInfo();
     }
 
@@ -62,7 +79,7 @@ public class Game {
         if (health <= 0) {
             gameInfoSideLayout.printGameOver();
             timer.setOnTimerFinishListener(this::finish);
-        }else {
+        } else {
             gameInfoSideLayout.printGameLose();
             timer.setOnTimerFinishListener(this::repeatLevel);
         }
@@ -80,12 +97,14 @@ public class Game {
     }
 
     private void showGameInfo() {
-        gameInfoSideLayout.show(player.getHighScore(), score, health, level.getMapNumber());
+        gameInfoSideLayout.show(player.getHighScore(),
+                score, health, level.getMapNumber());
     }
 
     private void initGameInfoSideLayout() {
         VBox vBox = new VBox();
         gameInfoSideLayout = new GameInfoSideLayout(vBox);
+        gameInfoSideLayout.setOnSaveButtonClickListener(mouseEvent -> save());
         root.getChildren().add(vBox);
     }
 
@@ -110,13 +129,13 @@ public class Game {
         if (nextLevel <= GlobalConstants.TOTAL_MAPS) {
             loadLevel(nextLevel);
             gameInfoSideLayout.updateLevel(nextLevel);
-        }else {
+        } else {
             finish();
         }
     }
 
-    private void repeatLevel(){
-        if (level!=null){
+    private void repeatLevel() {
+        if (level != null) {
             loadLevel(level.getMapNumber());
         }
     }
@@ -125,16 +144,36 @@ public class Game {
         gameInfoSideLayout.updateTimer(minute, second);
     }
 
-    private void evaluateScore(){
-        if (score > player.getHighScore()){
+    private void evaluateScore() {
+        if (score > player.getHighScore()) {
             player.setHighScore(score);
             playersService.add(player);
         }
     }
 
-    private void goToPlayerMainMenu(){
+    private void goToPlayerMainMenu() {
         root.getChildren().clear();
-        PlayerMainMenu playerMainMenu = new PlayerMainMenu(player,root.getScene(),playersService);
+        PlayerMainMenu playerMainMenu = new PlayerMainMenu(player, root.getScene(), playersService, saveInstanceService);
         playerMainMenu.show();
+    }
+
+    private void loadLevelFromGameSaveInstance(GameSaveInstance gameSaveInstance) {
+        Pane mapPane = new Pane();
+        level = new Level(this, mapPane, gameSaveInstance);
+        root.getChildren().add(0, mapPane);
+        updateTime(GlobalConstants.LEVEL_TIME_MIN, 0);
+    }
+
+    private void save(){
+        GameSaveInstance instance = new GameSaveInstance(player,level.getMap().getWidth(),
+                level.getMap().getHeight(), level.getMap().getNumericalMapArray(),
+                level.getMapNumber(),level.getMap().canEnemiesEscape(),
+                level.getTimerTick(),health,score);
+
+        saveInstanceService.add(instance);
+    }
+
+    public void removeGameSave(){
+        saveInstanceService.remove(player);
     }
 }

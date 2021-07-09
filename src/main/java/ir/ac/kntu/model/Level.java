@@ -3,10 +3,12 @@ package ir.ac.kntu.model;
 import ir.ac.kntu.Game;
 import ir.ac.kntu.exceptions.InvalidMapException;
 import ir.ac.kntu.services.CountDownTimer;
+import ir.ac.kntu.services.GameSaveInstance;
+import ir.ac.kntu.services.MapFileParser;
 import ir.ac.kntu.utils.MapLoader;
 import javafx.scene.layout.Pane;
 
-import java.io.FileNotFoundException;
+import java.time.LocalTime;
 
 public class Level {
     private final Game game;
@@ -17,12 +19,23 @@ public class Level {
 
     private final int mapNumber;
 
+    private LocalTime timerTick = LocalTime.of(0,GlobalConstants.LEVEL_TIME_MIN,0);
+
     private CountDownTimer levelTimer;
 
     public Level(Game game, Pane mapPane, int mapNumber) {
         this.game = game;
         this.mapPane = mapPane;
         this.mapNumber = mapNumber;
+        initTimer();
+    }
+
+    public Level(Game game, Pane mapPane, GameSaveInstance gameSaveInstance){
+        this.game = game;
+        this.mapPane = mapPane;
+        this.mapNumber = gameSaveInstance.getMapNumber();
+        timerTick = gameSaveInstance.getTimer();
+        map = MapLoader.load(this,gameSaveInstance);
         initTimer();
     }
 
@@ -38,24 +51,39 @@ public class Level {
         return mapNumber;
     }
 
+    public Map getMap() {
+        return map;
+    }
+
+    public LocalTime getTimerTick() {
+        return timerTick;
+    }
+
     public void run(){
+        game.getGameInfoSideLayout().setCanSaveGame(true);
+        loadMap();
+        startInitialDelayTimer();
+    }
+
+    private void loadMap() {
+        if (map!=null){
+            drawMap();
+            return;
+        }
         String mapPath = getMapPath();
         if (mapPath==null){
             return;
         }
-        loadMap(mapPath);
-        startInitialDelayTimer();
-    }
-
-    private void loadMap(String mapPath) {
         try {
-            map = MapLoader.load(mapPath,this);
-            map.draw(mapPane);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvalidMapException e) {
+            map = MapLoader.load(this,new MapFileParser(mapPath));
+            drawMap();
+        }  catch (InvalidMapException e) {
             e.printStackTrace();
         }
+    }
+
+    private void drawMap(){
+        map.draw(mapPane);
     }
 
     private String getMapPath(){
@@ -70,8 +98,9 @@ public class Level {
     }
 
     private void initTimer(){
-        levelTimer = new CountDownTimer(GlobalConstants.LEVEL_TIME_MIN,0);
+        levelTimer = new CountDownTimer(timerTick.getMinute(), timerTick.getSecond());
         levelTimer.setOnTimerTickListener((min, sec) -> {
+            timerTick = LocalTime.of(0,min,sec);
             game.updateTime(min,sec);
             if (min==2 && sec==50){
                 game.getGameInfoSideLayout().changeTimerToWarningState();
@@ -82,12 +111,14 @@ public class Level {
     }
 
     public void finish(LevelState levelState){
+        game.getGameInfoSideLayout().setCanSaveGame(false);
         map.stopAllObjects();
         levelTimer.stop();
         if (levelState!=null){
             switch (levelState){
                 case WIN:
                     game.getGameInfoSideLayout().printGameWin();
+                    game.removeGameSave();
                     CountDownTimer timer = new CountDownTimer(0, 3);
                     timer.setOnTimerFinishListener(game::loadNextLevel);
                     timer.start();

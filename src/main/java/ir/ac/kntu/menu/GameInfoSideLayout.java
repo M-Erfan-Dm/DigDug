@@ -1,11 +1,13 @@
 package ir.ac.kntu.menu;
 
-import ir.ac.kntu.model.GlobalConstants;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -29,12 +31,18 @@ public class GameInfoSideLayout {
 
     private Label messageLabel;
 
+    private Button saveButton;
+
+    private boolean canSaveGame;
+
+    private EventHandler<MouseEvent> onSaveButtonClick;
+
     private final DecimalFormat decimalFormat;
 
     public GameInfoSideLayout(VBox root) {
         this.root = root;
         decimalFormat = new DecimalFormat("00");
-        root.setPadding(new Insets(25,0,0,10));
+        root.setPadding(new Insets(25, 0, 0, 10));
         root.setSpacing(30);
         initNodes();
     }
@@ -43,114 +51,146 @@ public class GameInfoSideLayout {
         return root;
     }
 
-    public void show(int highScore, int score, int health, int level){
+    public void setCanSaveGame(boolean canSaveGame) {
+        this.canSaveGame = canSaveGame;
+    }
+
+    public void setOnSaveButtonClickListener(EventHandler<MouseEvent> onSaveButtonClick) {
+        this.onSaveButtonClick = onSaveButtonClick;
+    }
+
+    public void show(int highScore, int score, int health, int level) {
         updateHighScore(highScore);
         updateScore(score);
         updateHealth(health);
         updateLevel(level);
     }
 
-    private void initNodes(){
+    private void initNodes() {
         initHighScoreLabel();
         initScoreLabel();
         initHealthLayout();
         initLevelLabel();
         initTimerLabel();
+        initSaveButton();
         initMessageLabel();
     }
 
-    public void updateHighScore(int highScore){
+    public void updateHighScore(int highScore) {
         highScoreLabel.setText("High Score : " + highScore);
     }
 
-    public void updateScore(int score){
+    public void updateScore(int score) {
         scoreLabel.setText("Score : " + score);
     }
 
-    public void updateHealth(int health){
+    public void updateHealth(int health) {
         healthLabel.setText("Health : " + health);
     }
 
-    public void updateLevel(int level){
+    public void updateLevel(int level) {
         levelLabel.setText("Level : " + level);
     }
 
-    public void updateTimer(int minute,int second){
+    public void updateTimer(int minute, int second) {
         timerLabel.setText("Time : " + decimalFormat.format(minute) + " : " + decimalFormat.format(second));
     }
 
-    public void changeTimerToNormalState(){
+    public void changeTimerToNormalState() {
         timerLabel.setTextFill(Color.WHITE);
     }
 
-    public void changeTimerToWarningState(){
-        timerLabel.setTextFill(Color.rgb(190,28,28));
+    public void changeTimerToWarningState() {
+        timerLabel.setTextFill(Color.rgb(190, 28, 28));
     }
 
-    private void initHighScoreLabel(){
+    private void initHighScoreLabel() {
         highScoreLabel = new Label();
         highScoreLabel.setTextFill(Color.WHITE);
         root.getChildren().add(highScoreLabel);
     }
 
-    private void initScoreLabel(){
+    private void initScoreLabel() {
         scoreLabel = new Label();
         scoreLabel.setTextFill(Color.WHITE);
         root.getChildren().add(scoreLabel);
     }
 
-    private void initHealthLayout(){
+    private void initHealthLayout() {
         HBox healthLayout = new HBox();
         healthLayout.setSpacing(10);
         healthLabel = new Label();
         healthLabel.setTextFill(Color.WHITE);
         String imagePath = new File("src/main/resources/assets/heart.png").toURI().toString();
         Image image = new Image(imagePath,
-                30,30,false,false);
+                30, 30, false, false);
         ImageView imageView = new ImageView(image);
-        healthLayout.getChildren().addAll(healthLabel,imageView);
+        healthLayout.getChildren().addAll(healthLabel, imageView);
         root.getChildren().add(healthLayout);
     }
 
-    private void initLevelLabel(){
+    private void initLevelLabel() {
         levelLabel = new Label();
         levelLabel.setTextFill(Color.WHITE);
         root.getChildren().add(levelLabel);
     }
 
-    private void initTimerLabel(){
+    private void initTimerLabel() {
         timerLabel = new Label();
         timerLabel.setTextFill(Color.WHITE);
         root.getChildren().add(timerLabel);
     }
 
-    private void initMessageLabel(){
+    private void initMessageLabel() {
         messageLabel = new Label();
         messageLabel.setAlignment(Pos.CENTER);
         root.getChildren().add(messageLabel);
     }
 
-    public void printGameOver(){
+    private void initSaveButton() {
+        saveButton = new Button("Save Game");
+        saveButton.setStyle("-fx-background-color: #2de911;-fx-text-fill: #FFFFFF");
+        saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            if (canSaveGame) {
+                if (onSaveButtonClick != null) {
+                    onSaveButtonClick.handle(mouseEvent);
+                }
+                setGreenMessageColor();
+                messageLabel.setText("Game Saved");
+            }
+        });
+        root.getChildren().add(saveButton);
+    }
+
+    public void printGameOver() {
         messageLabel.setText("Game Over");
-        messageLabel.setStyle("-fx-text-fill: #be1c1c;-fx-font-size: 25px");
+        setRedMessageColor();
     }
 
-    public void printGameLose(){
+    public void printGameLose() {
         messageLabel.setText("You Lost");
-        messageLabel.setStyle("-fx-text-fill: #be1c1c;-fx-font-size: 25px");
+        setRedMessageColor();
     }
 
-    public void printGameWin(){
+    public void printGameWin() {
         messageLabel.setText("You Won");
-        messageLabel.setStyle("-fx-text-fill: #43d21e;-fx-font-size: 25px");
+        setGreenMessageColor();
     }
 
-    public void clearMessage(){
+    public void clearMessage() {
         messageLabel.setText("");
     }
 
-    public void printInitialDelay(int second){
+    public void printInitialDelay(int second) {
         messageLabel.setText(decimalFormat.format(second));
+        setRedMessageColor();
+    }
+
+    private void setGreenMessageColor() {
+        messageLabel.setStyle("-fx-text-fill: #43d21e;-fx-font-size: 25px");
+    }
+
+    private void setRedMessageColor() {
         messageLabel.setStyle("-fx-text-fill: #be1c1c;-fx-font-size: 25px");
     }
 }

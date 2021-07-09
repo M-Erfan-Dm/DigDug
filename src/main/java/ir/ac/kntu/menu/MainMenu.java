@@ -1,6 +1,7 @@
 package ir.ac.kntu.menu;
 
 import ir.ac.kntu.model.GlobalConstants;
+import ir.ac.kntu.services.GameSaveInstanceService;
 import ir.ac.kntu.services.PlayersService;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -17,6 +18,8 @@ public class MainMenu {
 
     private PlayersService playersService;
 
+    private GameSaveInstanceService saveInstanceService;
+
     private Button loginButton;
 
     private Button signupButton;
@@ -27,9 +30,10 @@ public class MainMenu {
 
     private boolean isShowing = false;
 
-    public MainMenu(StackPane root, PlayersService playersService) {
+    public MainMenu(StackPane root, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
         this.root = root;
         this.playersService = playersService;
+        this.saveInstanceService = saveInstanceService;
         setBackground();
         initButtons();
     }
@@ -68,7 +72,8 @@ public class MainMenu {
             LoginMenu loginMenu = new LoginMenu(playersService);
             loginMenu.setOnPlayerLoginListener(player -> {
                 root.getChildren().clear();
-                PlayerMainMenu playerMainMenu = new PlayerMainMenu(player,root.getScene(), playersService);
+                PlayerMainMenu playerMainMenu = new PlayerMainMenu(player,root.getScene(), playersService,
+                        saveInstanceService);
                 playerMainMenu.show();
             });
             loginMenu.show();

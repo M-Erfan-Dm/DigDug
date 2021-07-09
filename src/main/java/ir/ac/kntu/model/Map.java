@@ -6,7 +6,6 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Map {
 
@@ -28,12 +27,17 @@ public class Map {
 
     private final EnemyAIService enemyAIService;
 
-    public Map(int width, int height, int[][] rawMap, Level level) {
+    public Map(int width, int height, List<Integer>[][] rawMap, Level level) {
         this.width = width;
         this.height = height;
         this.level = level;
         enemyAIService = new EnemyAIService();
         createAllGameObjects(rawMap);
+    }
+
+    public Map(int width, int height, List<Integer>[][] rawMap, Level level, boolean enemiesCanEscape) {
+        this(width, height, rawMap, level);
+        this.enemiesCanEscape = enemiesCanEscape;
     }
 
     public double getPosition(int pos) {
@@ -72,16 +76,18 @@ public class Map {
         return extraSkillObjectController;
     }
 
-    private void createAllGameObjects(int[][] rawMap) {
+    private void createAllGameObjects(List<Integer>[][] rawMap) {
         cells = new Cell[height][width];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 Cell cell = new Cell(j, i);
                 cells[i][j] = cell;
-                int code = rawMap[i][j];
-                GameObject object = createGameObjectByCode(j, i, code);
-                if (object != null) {
-                    cell.add(object);
+                List<Integer> codes = rawMap[i][j];
+                for (int code : codes) {
+                    GameObject object = createGameObjectByCode(j, i, code);
+                    if (object != null) {
+                        cell.add(object);
+                    }
                 }
             }
         }
@@ -153,19 +159,19 @@ public class Map {
                 .forEach(gameObject -> ((Enemy) gameObject).run());
     }
 
-    public void decrementEnemyCount(){
+    public void decrementEnemyCount() {
         enemiesCount--;
-        if (enemiesCount==0){
+        if (enemiesCount == 0) {
             level.finish(LevelState.WIN);
         }
     }
 
-    public void stopAllObjects(){
+    public void stopAllObjects() {
         getAllObjectsByType(Movable.class).forEach(Movable::stopMoving);
         extraSkillObjectController.cancelTimer();
     }
 
-    private <T> List<T> getAllObjectsByType(Class<T> gameObjectType){
+    private <T> List<T> getAllObjectsByType(Class<T> gameObjectType) {
         List<T> objects = new ArrayList<>();
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -174,5 +180,23 @@ public class Map {
             }
         }
         return objects;
+    }
+
+    public List<Integer>[][] getNumericalMapArray() {
+        List<Integer>[][] mapArray = new List[height][width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                Cell cell = cells[i][j];
+                List<Integer> numericalCodes = new ArrayList<>();
+                for (GameObject object : cell.getGameObjects()) {
+                    Integer code =object.getNumericalMapCode();
+                    if (code != null) {
+                        numericalCodes.add(code);
+                    }
+                }
+                mapArray[i][j] = numericalCodes;
+            }
+        }
+        return mapArray;
     }
 }

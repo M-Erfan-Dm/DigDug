@@ -6,13 +6,13 @@ import ir.ac.kntu.utils.PlayersHighScoreComparator;
 import java.util.*;
 
 public class PlayersService {
-    private final ListIODao<Player> ListIODao;
+    private final ListIODao<Player> listIODao;
 
     private final List<Player> players;
 
-    public PlayersService(ListIODao<Player> ListIODao) {
-        this.ListIODao = ListIODao;
-        players = ListIODao.load();
+    public PlayersService(ListIODao<Player> listIODao) {
+        this.listIODao = listIODao;
+        players = listIODao.load();
     }
 
     public List<Player> getPlayers() {
@@ -28,13 +28,13 @@ public class PlayersService {
     public void add(Player player) {
         players.remove(player);
         players.add(player);
-        ListIODao.save(players);
+        listIODao.save(players);
     }
 
     public boolean remove(Player player){
         boolean result = players.remove(player);
         if (result){
-            ListIODao.save(players);
+            listIODao.save(players);
             return true;
         }
         return false;

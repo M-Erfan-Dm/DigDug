@@ -2,6 +2,8 @@ package ir.ac.kntu.menu;
 
 import ir.ac.kntu.Game;
 import ir.ac.kntu.model.Player;
+import ir.ac.kntu.services.GameSaveInstance;
+import ir.ac.kntu.services.GameSaveInstanceService;
 import ir.ac.kntu.services.PlayersService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,11 +20,14 @@ public class PlayerMainMenu {
 
     private final StackPane root;
 
-    private PlayersService playersService;
+    private final PlayersService playersService;
 
-    public PlayerMainMenu(Player player, Scene scene, PlayersService playersService) {
+    private final GameSaveInstanceService saveInstanceService;
+
+    public PlayerMainMenu(Player player, Scene scene, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
         this.player = player;
         this.playersService = playersService;
+        this.saveInstanceService = saveInstanceService;
         this.root = new StackPane();
         scene.setRoot(this.root);
         this.root.setPadding(new Insets(50,50,50,50));
@@ -37,7 +42,7 @@ public class PlayerMainMenu {
     private void initNodes(){
         initWelcomeLabel();
         initUserDataLabels();
-        initStartGameButton();
+        initGameButtons();
     }
 
     private void initWelcomeLabel(){
@@ -59,20 +64,45 @@ public class PlayerMainMenu {
         root.getChildren().add(vBox);
     }
 
-    private void initStartGameButton(){
-        Button startGameButton = new Button("Start Game");
-        startGameButton.getStylesheets().add(new File(
-                "src/main/java/ir/ac/kntu/style/Button.css").toURI().toString());
-        startGameButton.setPrefWidth(300);
-        startGameButton.setOnMouseClicked(mouseEvent -> startGame());
-        StackPane.setAlignment(startGameButton,Pos.BOTTOM_CENTER);
-        root.getChildren().add(startGameButton);
+    private void initGameButtons(){
+        HBox hBox = new HBox();
+        Button newGameButton = new Button("New Game");
+        Button continueGameButton = new Button("Continue Game");
+        setupButtonStyles(newGameButton);
+        setupButtonStyles(continueGameButton);
+        newGameButton.setOnMouseClicked(mouseEvent -> startNewGame());
+        continueGameButton.setOnMouseClicked(mouseEvent -> continueGame());
+        hBox.getChildren().addAll(continueGameButton, newGameButton);
+        hBox.setSpacing(50);
+        hBox.setAlignment(Pos.BOTTOM_CENTER);
+        root.getChildren().add(hBox);
+        GameSaveInstance instance = saveInstanceService.getInstanceByPlayer(player);
+        if (instance==null){
+            continueGameButton.setDisable(true);
+        }
     }
 
-    private void startGame(){
+    private void setupButtonStyles(Button button){
+        button.getStylesheets().add(new File(
+                "src/main/java/ir/ac/kntu/style/Button.css").toURI().toString());
+        button.setPrefWidth(300);
+    }
+
+    private void prepareStartingGame(){
         root.getChildren().clear();
         incrementPlayedGamesCount();
-        Game game = new Game(root.getScene(),player, playersService);
+    }
+
+    private void startNewGame(){
+        prepareStartingGame();
+        Game game = new Game(root.getScene(),player, playersService, saveInstanceService);
+        game.start();
+    }
+
+    private void continueGame(){
+        prepareStartingGame();
+        GameSaveInstance gameSaveInstance = saveInstanceService.getInstanceByPlayer(player);
+        Game game = new Game(root.getScene(),gameSaveInstance,playersService,saveInstanceService);
         game.start();
     }
 

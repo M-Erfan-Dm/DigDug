@@ -2,6 +2,8 @@ package ir.ac.kntu;
 
 import ir.ac.kntu.menu.MainMenu;
 import ir.ac.kntu.model.GlobalConstants;
+import ir.ac.kntu.services.GameSaveInstance;
+import ir.ac.kntu.services.GameSaveInstanceService;
 import ir.ac.kntu.services.ListFileIO;
 import ir.ac.kntu.services.PlayersService;
 import javafx.application.Application;
@@ -9,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.util.List;
 
 public class JavaFxApplication extends Application {
 
@@ -22,7 +26,8 @@ public class JavaFxApplication extends Application {
         Scene scene = new Scene(root, GlobalConstants.SCENE_WIDTH, GlobalConstants.SCENE_HEIGHT);
 
         PlayersService playersService = new PlayersService(new ListFileIO<>("files/Players"));
-        MainMenu mainMenu = new MainMenu(root, playersService);
+        GameSaveInstanceService saveInstanceService = new GameSaveInstanceService(new ListFileIO<>("files/GameSaves"));
+        MainMenu mainMenu = new MainMenu(root, playersService, saveInstanceService);
         mainMenu.show();
 
         // Setting stage properties

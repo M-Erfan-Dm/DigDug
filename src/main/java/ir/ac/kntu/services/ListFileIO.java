@@ -1,34 +1,32 @@
 package ir.ac.kntu.services;
 
-import ir.ac.kntu.model.Player;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayersFileIO implements PlayersIODao {
-    private File file;
+public class ListFileIO<T> implements ListIODao<T> {
+    private final File file;
 
-    public PlayersFileIO(String filePath) {
+    public ListFileIO(String filePath) {
         file = new File(filePath);
     }
 
     @Override
-    public void save(List<Player> players) {
+    public void save(List<T> objects) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            oos.writeObject(players);
+            oos.writeObject(objects);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public List<Player> load() {
+    public List<T> load() {
         if (!file.exists()) {
             return new ArrayList<>();
         }
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-            return (List<Player>) ois.readObject();
+            return (List<T>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }

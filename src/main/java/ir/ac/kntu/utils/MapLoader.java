@@ -1,8 +1,8 @@
 package ir.ac.kntu.utils;
 
 import ir.ac.kntu.exceptions.InvalidMapException;
-import ir.ac.kntu.model.Level;
-import ir.ac.kntu.model.Map;
+import ir.ac.kntu.models.Level;
+import ir.ac.kntu.models.Map;
 import ir.ac.kntu.services.GameSaveInstance;
 import ir.ac.kntu.services.MapParserDao;
 

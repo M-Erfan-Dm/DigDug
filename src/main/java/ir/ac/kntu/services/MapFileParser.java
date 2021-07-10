@@ -1,7 +1,7 @@
 package ir.ac.kntu.services;
 
 import ir.ac.kntu.exceptions.InvalidMapException;
-import ir.ac.kntu.model.GlobalConstants;
+import ir.ac.kntu.models.GlobalConstants;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,6 +1,6 @@
 package ir.ac.kntu.services;
 
-import ir.ac.kntu.model.Player;
+import ir.ac.kntu.models.Player;
 import ir.ac.kntu.utils.PlayersHighScoreComparator;
 
 import java.util.ArrayList;

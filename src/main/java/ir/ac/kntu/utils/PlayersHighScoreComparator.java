@@ -1,6 +1,6 @@
 package ir.ac.kntu.utils;
 
-import ir.ac.kntu.model.Player;
+import ir.ac.kntu.models.Player;
 
 import java.util.Comparator;
 

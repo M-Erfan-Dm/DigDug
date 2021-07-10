@@ -1,7 +1,7 @@
 package ir.ac.kntu;
 
-import ir.ac.kntu.menu.MainMenu;
-import ir.ac.kntu.model.GlobalConstants;
+import ir.ac.kntu.menus.MainMenu;
+import ir.ac.kntu.models.GlobalConstants;
 import ir.ac.kntu.services.GameSaveInstanceService;
 import ir.ac.kntu.services.ListFileIO;
 import ir.ac.kntu.services.PlayersService;

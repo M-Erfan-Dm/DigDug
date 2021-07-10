@@ -1,9 +1,9 @@
 package ir.ac.kntu.services;
 
-import ir.ac.kntu.model.Cell;
-import ir.ac.kntu.model.Digger;
-import ir.ac.kntu.model.Direction;
-import ir.ac.kntu.model.Enemy;
+import ir.ac.kntu.models.Cell;
+import ir.ac.kntu.models.Digger;
+import ir.ac.kntu.models.Direction;
+import ir.ac.kntu.models.Enemy;
 import javafx.geometry.Point2D;
 
 import java.util.*;

@@ -36,7 +36,7 @@ public class GlobalConstants {
 
     public static final LocalTime LEVEL_TIME = LocalTime.of(0, 3, 0);
 
-    public static final LocalTime LEVEL_WARNING_TIME = LocalTime.of(0, 1, 0);
+    public static final LocalTime LEVEL_WARNING_TIME = LocalTime.of(0, 1, 30);
 
     public static final int TOTAL_MAPS = 4;
 

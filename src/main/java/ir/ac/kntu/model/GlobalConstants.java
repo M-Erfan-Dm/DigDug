@@ -34,9 +34,9 @@ public class GlobalConstants {
 
     public static final int LEVEL_FINISH_SCORE = 1200;
 
-    public static final LocalTime LEVEL_TIME = LocalTime.of(0,3,0);
+    public static final LocalTime LEVEL_TIME = LocalTime.of(0, 3, 0);
 
-    public static final LocalTime LEVEL_WARNING_TIME = LocalTime.of(0,1,0);
+    public static final LocalTime LEVEL_WARNING_TIME = LocalTime.of(0, 1, 0);
 
     public static final int TOTAL_MAPS = 4;
 
@@ -49,6 +49,8 @@ public class GlobalConstants {
     public static final int MAX_WIDTH = 34;
 
     public static final int MAX_HEIGHT = 27;
+
+    public static final int EXTRA_SKILL_OBJECT_DURATION_SEC = 15;
 
     public static boolean isCodeOfSoil(int code) {
         return code == SOIL_1 || code == SOIL_2 ||

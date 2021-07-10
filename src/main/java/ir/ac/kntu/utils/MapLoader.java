@@ -20,8 +20,8 @@ public class MapLoader {
         return new Map(width, height, mapArray, level);
     }
 
-    public static Map load(Level level,GameSaveInstance gameSaveInstance){
-        return new Map(gameSaveInstance.getWidth(),gameSaveInstance.getHeight(),
-                gameSaveInstance.getMapArray(),level, gameSaveInstance.enemiesCanEscape());
+    public static Map load(Level level, GameSaveInstance gameSaveInstance) {
+        return new Map(gameSaveInstance.getWidth(), gameSaveInstance.getHeight(),
+                gameSaveInstance.getMapArray(), level, gameSaveInstance.enemiesCanEscape());
     }
 }

@@ -8,13 +8,12 @@ import ir.ac.kntu.services.GameSaveInstance;
 import ir.ac.kntu.services.GameSaveInstanceService;
 import ir.ac.kntu.services.PlayersService;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 public class GameMenu {
 
-    private final Pane root;
+    private final HBox root;
 
     private final Player player;
 
@@ -30,19 +29,18 @@ public class GameMenu {
 
     private final GameSaveInstanceService saveInstanceService;
 
-    public GameMenu(Scene scene, Player player, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
+    public GameMenu(HBox root, Player player, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
         this.playersService = playersService;
         this.saveInstanceService = saveInstanceService;
-        root = new HBox();
+        this.root = root;
         this.player = player;
-        scene.setRoot(root);
         root.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
         initGameInfoSideLayout();
     }
 
-    public GameMenu(Scene scene, GameSaveInstance gameSaveInstance, PlayersService playersService,
+    public GameMenu(HBox hBox, GameSaveInstance gameSaveInstance, PlayersService playersService,
                     GameSaveInstanceService saveInstanceService) {
-        this(scene, gameSaveInstance.getPlayer(), playersService, saveInstanceService);
+        this(hBox, gameSaveInstance.getPlayer(), playersService, saveInstanceService);
         health = gameSaveInstance.getHealth();
         score = gameSaveInstance.getScore();
         loadLevelFromGameSaveInstance(gameSaveInstance);
@@ -114,7 +112,7 @@ public class GameMenu {
         Pane mapPane = new Pane();
         level = new Level(this, mapPane, mapNumber);
         root.getChildren().add(0, mapPane);
-        updateTime(GlobalConstants.LEVEL_TIME.getMinute(), GlobalConstants.LEVEL_TIME.getSecond());
+        updateTimer(GlobalConstants.LEVEL_TIME.getMinute(), GlobalConstants.LEVEL_TIME.getSecond());
         level.run();
     }
 
@@ -138,7 +136,7 @@ public class GameMenu {
         }
     }
 
-    public void updateTime(int minute, int second) {
+    public void updateTimer(int minute, int second) {
         gameInfoSideLayout.updateTimer(minute, second);
     }
 
@@ -153,7 +151,8 @@ public class GameMenu {
         root.getChildren().clear();
         StackPane stackPane = new StackPane();
         root.getScene().setRoot(stackPane);
-        PlayerMainMenu playerMainMenu = new PlayerMainMenu(player, stackPane, playersService, saveInstanceService);
+        PlayerMainMenu playerMainMenu = new PlayerMainMenu(player, stackPane,
+                playersService, saveInstanceService);
         playerMainMenu.show();
     }
 
@@ -161,19 +160,15 @@ public class GameMenu {
         Pane mapPane = new Pane();
         level = new Level(this, mapPane, gameSaveInstance);
         root.getChildren().add(0, mapPane);
-        updateTime(GlobalConstants.LEVEL_TIME.getMinute(), GlobalConstants.LEVEL_TIME.getSecond());
+        updateTimer(gameSaveInstance.getTimer().getMinute(), gameSaveInstance.getTimer().getSecond());
     }
 
-    private void save(){
-        GameSaveInstance instance = new GameSaveInstance(player,level.getMap().getWidth(),
+    private void save() {
+        GameSaveInstance instance = new GameSaveInstance(player, level.getMap().getWidth(),
                 level.getMap().getHeight(), level.getMap().getNumericalMapArray(),
-                level.getMapNumber(),level.getMap().canEnemiesEscape(),
-                level.getTimerTick(),health,score);
+                level.getMapNumber(), level.getMap().canEnemiesEscape(),
+                level.getTimerTick(), health, score);
 
         saveInstanceService.add(instance);
-    }
-
-    public void removeGameSave(){
-        saveInstanceService.remove(player);
     }
 }

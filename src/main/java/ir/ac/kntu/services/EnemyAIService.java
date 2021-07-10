@@ -35,11 +35,8 @@ public class EnemyAIService {
             Point2D nextPoint = enemy.getNextPoint(x, y, 1, direction);
             x = (int) nextPoint.getX();
             y = (int) nextPoint.getY();
-            if (!enemy.getMap().isGridCoordinateInMap(x, y)) {
-                return false;
-            }
             Cell cell = enemy.getMap().getCell(x, y);
-            if (cell.hasBlock()) {
+            if (cell == null || cell.hasBlock()) {
                 return false;
             }
             if (cell.hasObjectType(Digger.class)) {
@@ -83,11 +80,8 @@ public class EnemyAIService {
             Point2D nextPoint = enemy.getNextPoint(x, y, 1, Direction.LEFT);
             x = (int) nextPoint.getX();
             y = (int) nextPoint.getY();
-            if (!enemy.getMap().isGridCoordinateInMap(x, y)) {
-                return null;
-            }
             Cell cell = enemy.getMap().getCell(x, y);
-            if (cell.hasBlock()) {
+            if (cell == null || cell.hasBlock()) {
                 return null;
             }
             if (x == 0) {

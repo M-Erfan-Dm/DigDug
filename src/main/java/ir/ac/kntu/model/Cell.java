@@ -41,14 +41,14 @@ public class Cell {
                 .map(gameObjectType::cast).collect(Collectors.toList());
     }
 
-    public <T extends GameObject> boolean hasObjectType(Class<T> gameObjectType){
+    public <T extends GameObject> boolean hasObjectType(Class<T> gameObjectType) {
         List<T> objects = getAllObjectsByType(gameObjectType);
         return !objects.isEmpty();
     }
 
-    public <T extends GameObject> T getFirstObjectByType(Class<T> gameObjectType){
+    public <T extends GameObject> T getFirstObjectByType(Class<T> gameObjectType) {
         List<T> objects = getAllObjectsByType(gameObjectType);
-        if (!objects.isEmpty()){
+        if (!objects.isEmpty()) {
             return objects.get(0);
         }
         return null;
@@ -62,7 +62,7 @@ public class Cell {
         return gameObjects.isEmpty() || !hasBlock();
     }
 
-    public boolean hasBlock(){
+    public boolean hasBlock() {
         return hasObjectType(Soil.class) || hasObjectType(Stone.class);
     }
 }

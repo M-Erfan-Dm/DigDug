@@ -1,7 +1,7 @@
 package ir.ac.kntu.model;
 
-import ir.ac.kntu.menu.GameMenu;
 import ir.ac.kntu.exceptions.InvalidMapException;
+import ir.ac.kntu.menu.GameMenu;
 import ir.ac.kntu.services.CountDownTimer;
 import ir.ac.kntu.services.GameSaveInstance;
 import ir.ac.kntu.services.MapFileParser;
@@ -30,12 +30,12 @@ public class Level {
         initTimer();
     }
 
-    public Level(GameMenu gameMenu, Pane mapPane, GameSaveInstance gameSaveInstance){
+    public Level(GameMenu gameMenu, Pane mapPane, GameSaveInstance gameSaveInstance) {
         this.gameMenu = gameMenu;
         this.mapPane = mapPane;
         this.mapNumber = gameSaveInstance.getMapNumber();
         timerTick = gameSaveInstance.getTimer();
-        map = MapLoader.load(this,gameSaveInstance);
+        map = MapLoader.load(this, gameSaveInstance);
         initTimer();
     }
 
@@ -59,35 +59,35 @@ public class Level {
         return timerTick;
     }
 
-    public void run(){
+    public void run() {
         gameMenu.getGameInfoSideLayout().setCanSaveGame(true);
         loadMap();
         startInitialDelayTimer();
     }
 
     private void loadMap() {
-        if (map!=null){
+        if (map != null) {
             drawMap();
             return;
         }
         String mapPath = getMapPath();
-        if (mapPath==null){
+        if (mapPath == null) {
             return;
         }
         try {
-            map = MapLoader.load(this,new MapFileParser(mapPath));
+            map = MapLoader.load(this, new MapFileParser(mapPath));
             drawMap();
-        }  catch (InvalidMapException e) {
+        } catch (InvalidMapException e) {
             e.printStackTrace();
         }
     }
 
-    private void drawMap(){
+    private void drawMap() {
         map.draw(mapPane);
     }
 
-    private String getMapPath(){
-        switch (mapNumber){
+    private String getMapPath() {
+        switch (mapNumber) {
             case 1:
                 return "src/main/resources/map/map_1.txt";
             case 2:
@@ -101,32 +101,27 @@ public class Level {
         }
     }
 
-    private void initTimer(){
+    private void initTimer() {
         levelTimer = new CountDownTimer(timerTick.getMinute(), timerTick.getSecond());
         levelTimer.setOnTimerTickListener((min, sec) -> {
-            timerTick = LocalTime.of(0,min,sec);
-            gameMenu.updateTime(min,sec);
-            checkEscapingTime(min,sec);
+            timerTick = LocalTime.of(0, min, sec);
+            gameMenu.updateTimer(min, sec);
+            checkEscapingTime(min, sec);
         });
         levelTimer.setOnTimerFinishListener(() -> finish(LevelState.LOSE));
     }
 
-    public void finish(LevelState levelState){
+    public void finish(LevelState levelState) {
         gameMenu.getGameInfoSideLayout().setCanSaveGame(false);
         map.stopAllObjects();
         levelTimer.stop();
-        if (levelState!=null){
-            switch (levelState){
+        if (levelState != null) {
+            switch (levelState) {
                 case WIN:
-                    gameMenu.getGameInfoSideLayout().printGameWin();
-                    gameMenu.removeGameSave();
-                    gameMenu.incrementScore(GlobalConstants.LEVEL_FINISH_SCORE);
-                    CountDownTimer timer = new CountDownTimer(0, 3);
-                    timer.setOnTimerFinishListener(gameMenu::loadNextLevel);
-                    timer.start();
+                    win();
                     break;
                 case LOSE:
-                    gameMenu.decrementHealth();
+                    lose();
                     break;
                 default:
                     break;
@@ -134,8 +129,20 @@ public class Level {
         }
     }
 
-    private void startInitialDelayTimer(){
-        CountDownTimer timer = new CountDownTimer(0,GlobalConstants.ENEMY_INITIAL_DELAY_SEC);
+    private void win() {
+        gameMenu.getGameInfoSideLayout().printGameWin();
+        gameMenu.incrementScore(GlobalConstants.LEVEL_FINISH_SCORE);
+        CountDownTimer timer = new CountDownTimer(0, 3);
+        timer.setOnTimerFinishListener(gameMenu::loadNextLevel);
+        timer.start();
+    }
+
+    private void lose() {
+        gameMenu.decrementHealth();
+    }
+
+    private void startInitialDelayTimer() {
+        CountDownTimer timer = new CountDownTimer(0, GlobalConstants.ENEMY_INITIAL_DELAY_SEC);
         timer.setOnTimerTickListener((min, sec) -> gameMenu.getGameInfoSideLayout().printInitialDelay(sec));
         timer.setOnTimerFinishListener(() -> {
             gameMenu.getGameInfoSideLayout().clearMessage();
@@ -145,9 +152,9 @@ public class Level {
         timer.start();
     }
 
-    private void checkEscapingTime(int min, int sec){
-        if (min<=GlobalConstants.LEVEL_WARNING_TIME.getMinute() &&
-                sec<=GlobalConstants.LEVEL_WARNING_TIME.getSecond()){
+    private void checkEscapingTime(int min, int sec) {
+        if (min <= GlobalConstants.LEVEL_WARNING_TIME.getMinute() &&
+                sec <= GlobalConstants.LEVEL_WARNING_TIME.getSecond()) {
             gameMenu.getGameInfoSideLayout().changeTimerToWarningState();
             map.setEnemiesCanEscape(true);
         }

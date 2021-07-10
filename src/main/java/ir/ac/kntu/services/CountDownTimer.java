@@ -6,9 +6,9 @@ import java.time.DateTimeException;
 
 public class CountDownTimer {
 
-    private int minute;
+    private final int minute;
 
-    private int second;
+    private final int second;
 
     private OnTimerFinishListener onTimerFinishListener;
 
@@ -45,14 +45,14 @@ public class CountDownTimer {
             return;
         }
         thread = new Thread(() -> {
-            if (stop){
+            if (stop) {
                 return;
             }
             canRestart = false;
             initialDelay();
             int totalSeconds = convertTimeToSeconds(minute, second);
             for (int i = totalSeconds; i >= 0; i--) {
-                if (stop){
+                if (stop) {
                     return;
                 }
                 try {
@@ -71,8 +71,8 @@ public class CountDownTimer {
         thread.start();
     }
 
-    public void stop(){
-        if (!thread.isInterrupted()){
+    public void stop() {
+        if (!thread.isInterrupted()) {
             thread.interrupt();
         }
         stop = true;

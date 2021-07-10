@@ -1,6 +1,6 @@
 package ir.ac.kntu.model;
 
-public abstract class ExtraSkillObject extends GameObject{
+public abstract class ExtraSkillObject extends GameObject {
 
     public ExtraSkillObject(Map map, int gridX, int gridY) {
         super(map, gridX, gridY, null);
@@ -8,11 +8,11 @@ public abstract class ExtraSkillObject extends GameObject{
 
     abstract public void performSkill();
 
-    public void addToMap(){
+    public void addToMap() {
         getCell().add(this);
     }
 
-    public void destroy(){
+    public void destroy() {
         getCell().remove(this);
         hideImageView();
     }

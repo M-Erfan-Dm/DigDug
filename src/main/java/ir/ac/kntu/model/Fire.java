@@ -5,7 +5,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
-public class Fire extends GameObject implements Movable{
+public class Fire extends GameObject implements Movable {
 
     private static final String FYGAR_FIRE = "src/main/resources/assets/fygar_fire.png";
 
@@ -15,7 +15,6 @@ public class Fire extends GameObject implements Movable{
 
     public Fire(Map map, int gridX, int gridY) {
         super(map, gridX, gridY, null);
-
         setImage(FYGAR_FIRE);
         hideImageView();
     }
@@ -26,8 +25,7 @@ public class Fire extends GameObject implements Movable{
         }
         this.fygar = fygar;
         fygar.stopMoving();
-        setGridX(gridX);
-        setGridY(gridY);
+        setGridCoordinate(gridX, gridY);
         updateRealPos();
         setDirection(fygar.getDirection());
         updateViewDirection();
@@ -53,6 +51,22 @@ public class Fire extends GameObject implements Movable{
 
     @Override
     public void moveOneCell() {
+        if (firingAnimation == null) {
+            initFiringAnimation();
+        }
+        firingAnimation.play();
+        checkDigger();
+    }
+
+    @Override
+    public void stopMoving() {
+        if (firingAnimation != null) {
+            firingAnimation.stop();
+        }
+        hideImageView();
+    }
+
+    private void initFiringAnimation() {
         int count = 3 * GlobalConstants.CELL_MOVING_PARTS_COUNT;
         double step = (double) GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
         firingAnimation = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> {
@@ -62,19 +76,9 @@ public class Fire extends GameObject implements Movable{
             setRealY(nextPoint.getY());
         }), new KeyFrame(Duration.millis(150)));
         firingAnimation.setCycleCount(count);
-        firingAnimation.play();
-        checkDigger();
         firingAnimation.setOnFinished(actionEvent -> {
             fygar.run();
             hideImageView();
         });
-    }
-
-    @Override
-    public void stopMoving() {
-        if (firingAnimation!=null){
-            firingAnimation.stop();
-        }
-        hideImageView();
     }
 }

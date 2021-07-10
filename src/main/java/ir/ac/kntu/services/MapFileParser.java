@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MapFileParser implements MapParserDao {
-    private String path;
+    private final String path;
 
     public MapFileParser(String path) {
         this.path = path;
@@ -42,8 +42,8 @@ public class MapFileParser implements MapParserDao {
                 }
                 List<Integer> codes = new ArrayList<>();
                 mapArray[i][j] = codes;
-                int value = scanner.nextInt();
-                codes.add(value);
+                int code = scanner.nextInt();
+                codes.add(code);
             }
         }
         return mapArray;

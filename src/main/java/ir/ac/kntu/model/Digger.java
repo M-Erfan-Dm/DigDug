@@ -31,11 +31,11 @@ public class Digger extends GameObject implements Movable {
 
     private static final String DEATH_IMAGE_5 = "src/main/resources/assets/digger_death5.png";
 
-    private static final List<String> SIMPLE_IMAGES_PATH = Arrays.asList(SIMPLE_IMAGE_1,SIMPLE_IMAGE_2);
+    private static final List<String> SIMPLE_IMAGES_PATH = Arrays.asList(SIMPLE_IMAGE_1, SIMPLE_IMAGE_2);
 
-    private static final List<String> DEATH_IMAGES_PATH =  Arrays.asList(DEATH_IMAGE_1, DEATH_IMAGE_2, DEATH_IMAGE_3, DEATH_IMAGE_4, DEATH_IMAGE_5);
+    private static final List<String> DEATH_IMAGES_PATH = Arrays.asList(DEATH_IMAGE_1, DEATH_IMAGE_2, DEATH_IMAGE_3, DEATH_IMAGE_4, DEATH_IMAGE_5);
 
-    private static final List<String> DIGGING_IMAGES_PATH = Arrays.asList(DIGGING_IMAGE_1,DIGGING_IMAGE_2);
+    private static final List<String> DIGGING_IMAGES_PATH = Arrays.asList(DIGGING_IMAGE_1, DIGGING_IMAGE_2);
 
     private static final double NORMAL_VELOCITY_MILLISECOND = 39;
 
@@ -71,7 +71,7 @@ public class Digger extends GameObject implements Movable {
         Point2D nextPoint = getNextPoint(getGridX(), getGridY(), 1, getDirection());
         int nextGridX = (int) nextPoint.getX();
         int nextGridY = (int) nextPoint.getY();
-        if (!canMoveToNextCell(nextGridX,nextGridY)) {
+        if (!canMoveToNextCell(nextGridX, nextGridY)) {
             return;
         }
         setGridCoordinate(nextGridX, nextGridY);
@@ -86,13 +86,13 @@ public class Digger extends GameObject implements Movable {
     @Override
     public void stopMoving() {
         canMove = false;
-        if (movingAnimation!=null) {
+        if (movingAnimation != null) {
             movingAnimation.stop();
         }
     }
 
     public void attachKeyboardHandlers(Scene scene) {
-        scene.addEventFilter(KeyEvent.ANY,keyEvent -> {
+        scene.addEventFilter(KeyEvent.ANY, keyEvent -> {
             if (canMove) {
                 switch (keyEvent.getCode()) {
                     case UP:
@@ -143,7 +143,7 @@ public class Digger extends GameObject implements Movable {
         }
     }
 
-    private void defaultMove(List<String> imagesPath){
+    private void defaultMove(List<String> imagesPath) {
         int count = GlobalConstants.CELL_MOVING_PARTS_COUNT;
         double step = (double) GlobalConstants.CELL_SIZE / count;
         movingAnimation = new Timeline(new KeyFrame(Duration.millis(velocityMilliSecond), actionEvent -> {
@@ -152,10 +152,10 @@ public class Digger extends GameObject implements Movable {
             setRealX(nextPoint.getX());
             setRealY(nextPoint.getY());
         }));
-        movingAnimation.setCycleCount(count);
-        movingAnimation.play();
         canMove = false;
+        movingAnimation.setCycleCount(count);
         movingAnimation.setOnFinished(actionEvent -> canMove = true);
+        movingAnimation.play();
     }
 
     private void shoot() {
@@ -184,19 +184,10 @@ public class Digger extends GameObject implements Movable {
         getCell().remove(this);
         stopMoving();
         gun.destroyGun();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> alternateImages(DEATH_IMAGES_PATH)),new KeyFrame(Duration.millis(250)));
-        timeline.setCycleCount(DEATH_IMAGES_PATH.size());
-        timeline.play();
-        timeline.setOnFinished(actionEvent -> {
-            hideImageView();
-            if (onDiggerDeathListener != null) {
-                onDiggerDeathListener.onDeath();
-            }
-            getMap().getLevel().finish(LevelState.LOSE);
-        });
+        playDeathAnimation();
     }
 
-    private void checkObjects(){
+    private void checkObjects() {
         checkStone();
         checkExtraSkillObject();
     }
@@ -212,16 +203,29 @@ public class Digger extends GameObject implements Movable {
         }
     }
 
-    private void checkExtraSkillObject(){
+    private void checkExtraSkillObject() {
         Cell cell = getCell();
-        if (cell.hasObjectType(ExtraSkillObject.class)){
+        if (cell.hasObjectType(ExtraSkillObject.class)) {
             ExtraSkillObjectController controller = getMap().getExtraSkillObjectController();
             controller.catchObject();
         }
     }
 
-    public void resetExtraSkills(){
+    public void resetExtraSkills() {
         setVelocityNormal();
         gun.setSimpleDistanceRange();
+    }
+
+    private void playDeathAnimation() {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> alternateImages(DEATH_IMAGES_PATH)), new KeyFrame(Duration.millis(250)));
+        timeline.setCycleCount(DEATH_IMAGES_PATH.size());
+        timeline.setOnFinished(actionEvent -> {
+            hideImageView();
+            if (onDiggerDeathListener != null) {
+                onDiggerDeathListener.onDeath();
+            }
+            getMap().getLevel().finish(LevelState.LOSE);
+        });
+        timeline.play();
     }
 }

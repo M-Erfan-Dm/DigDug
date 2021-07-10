@@ -14,9 +14,9 @@ public class PlayersHighScoreComparator implements Comparator<Player> {
 
     @Override
     public int compare(Player o1, Player o2) {
-        if (isAscending){
+        if (isAscending) {
             return o1.getHighScore() - o2.getHighScore();
-        }else {
+        } else {
             return o2.getHighScore() - o1.getHighScore();
         }
     }

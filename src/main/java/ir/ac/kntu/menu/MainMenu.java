@@ -14,11 +14,11 @@ import javafx.scene.layout.VBox;
 import java.io.File;
 
 public class MainMenu {
-    private StackPane root;
+    private final StackPane root;
 
-    private PlayersService playersService;
+    private final PlayersService playersService;
 
-    private GameSaveInstanceService saveInstanceService;
+    private final GameSaveInstanceService saveInstanceService;
 
     private Button loginButton;
 
@@ -48,9 +48,9 @@ public class MainMenu {
     }
 
     public void show() {
-        if (!isShowing){
+        if (!isShowing) {
             VBox vBox = new VBox();
-            vBox.getChildren().addAll(loginButton,signupButton, highScoresButton, exitButton);
+            vBox.getChildren().addAll(loginButton, signupButton, highScoresButton, exitButton);
             vBox.setAlignment(Pos.CENTER);
             vBox.setSpacing(60);
             root.getChildren().add(vBox);
@@ -72,7 +72,7 @@ public class MainMenu {
             LoginMenu loginMenu = new LoginMenu(playersService);
             loginMenu.setOnPlayerLoginListener(player -> {
                 root.getChildren().clear();
-                PlayerMainMenu playerMainMenu = new PlayerMainMenu(player,root, playersService,
+                PlayerMainMenu playerMainMenu = new PlayerMainMenu(player, root, playersService,
                         saveInstanceService);
                 playerMainMenu.show();
             });
@@ -80,7 +80,7 @@ public class MainMenu {
         });
     }
 
-    private void initSignupButton(){
+    private void initSignupButton() {
         signupButton = new Button("Sign Up");
         setButtonStyle(signupButton);
         signupButton.setOnMouseClicked(mouseEvent -> {

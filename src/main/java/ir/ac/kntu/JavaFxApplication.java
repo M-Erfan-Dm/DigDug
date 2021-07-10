@@ -2,7 +2,6 @@ package ir.ac.kntu;
 
 import ir.ac.kntu.menu.MainMenu;
 import ir.ac.kntu.model.GlobalConstants;
-import ir.ac.kntu.services.GameSaveInstance;
 import ir.ac.kntu.services.GameSaveInstanceService;
 import ir.ac.kntu.services.ListFileIO;
 import ir.ac.kntu.services.PlayersService;
@@ -11,8 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-
-import java.util.List;
 
 public class JavaFxApplication extends Application {
 

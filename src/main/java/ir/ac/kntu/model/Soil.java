@@ -46,7 +46,7 @@ public class Soil extends GameObject {
     }
 
     public void destroy() {
-        getMap().getCell(getGridX(), getGridY()).remove(this);
-        getImageView().setVisible(false);
+        getCell().remove(this);
+        hideImageView();
     }
 }

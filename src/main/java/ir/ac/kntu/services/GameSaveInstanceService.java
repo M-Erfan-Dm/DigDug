@@ -2,7 +2,6 @@ package ir.ac.kntu.services;
 
 import ir.ac.kntu.model.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameSaveInstanceService {
@@ -13,10 +12,6 @@ public class GameSaveInstanceService {
     public GameSaveInstanceService(ListIODao<GameSaveInstance> dao) {
         this.dao = dao;
         instances = dao.load();
-    }
-
-    public List<GameSaveInstance> getInstances() {
-        return new ArrayList<>(instances);
     }
 
     public void add(GameSaveInstance gameSaveInstance) {

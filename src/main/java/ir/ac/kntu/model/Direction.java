@@ -6,11 +6,11 @@ public enum Direction {
     RIGHT,
     LEFT;
 
-    public static Direction reverseDirection(Direction direction){
-        if (direction==null){
+    public static Direction reverseDirection(Direction direction) {
+        if (direction == null) {
             return UP;
         }
-        switch (direction){
+        switch (direction) {
             case UP:
                 return DOWN;
             case DOWN:

@@ -1,6 +1,6 @@
 package ir.ac.kntu.exceptions;
 
-public class InvalidMapException extends Exception{
+public class InvalidMapException extends Exception {
     public InvalidMapException() {
         super("Invalid Map");
     }

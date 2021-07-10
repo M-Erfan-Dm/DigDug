@@ -17,7 +17,7 @@ import java.text.DecimalFormat;
 
 public class GameInfoSideLayout {
 
-    private VBox root;
+    private final VBox root;
 
     private Label highScoreLabel;
 
@@ -30,8 +30,6 @@ public class GameInfoSideLayout {
     private Label timerLabel;
 
     private Label messageLabel;
-
-    private Button saveButton;
 
     private boolean canSaveGame;
 
@@ -148,7 +146,7 @@ public class GameInfoSideLayout {
     }
 
     private void initSaveButton() {
-        saveButton = new Button("Save Game");
+        Button saveButton = new Button("Save Game");
         saveButton.getStylesheets().add(new File(
                 "src/main/java/ir/ac/kntu/style/SaveButton.css").toURI().toString());
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {

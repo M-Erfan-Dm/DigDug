@@ -22,10 +22,6 @@ public class SignupMenu {
 
     private StackPane root;
 
-    private Label usernameLabel;
-
-    private Label passwordLabel;
-
     private TextField usernameTextField;
 
     private TextField passwordTextField;
@@ -74,8 +70,8 @@ public class SignupMenu {
     }
 
     private void initFields() {
-        usernameLabel = new Label("Username : ");
-        passwordLabel = new Label("Password : ");
+        Label usernameLabel = new Label("Username : ");
+        Label passwordLabel = new Label("Password : ");
         usernameTextField = new TextField();
         passwordTextField = new TextField();
         messageLabel = new Label();
@@ -89,7 +85,6 @@ public class SignupMenu {
         vBox.setSpacing(40);
         vBox.setAlignment(Pos.CENTER);
         root.getChildren().add(vBox);
-        StackPane.setAlignment(vBox, Pos.CENTER);
     }
 
 

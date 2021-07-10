@@ -20,8 +20,8 @@ public class Fygar extends Enemy {
     private final Fire fire;
 
     public Fygar(Map map, int x, int y, Fire fire) {
-        super(map, x, y, Arrays.asList(SIMPLE_IMAGE_1,SIMPLE_IMAGE_2),
-                Arrays.asList(DEATH_IMAGE_1,DEATH_IMAGE_2,DEATH_IMAGE_3,DEATH_IMAGE_4),
+        super(map, x, y, Arrays.asList(SIMPLE_IMAGE_1, SIMPLE_IMAGE_2),
+                Arrays.asList(DEATH_IMAGE_1, DEATH_IMAGE_2, DEATH_IMAGE_3, DEATH_IMAGE_4),
                 4, GlobalConstants.FYGAR_SCORE, GlobalConstants.FYGAR);
         this.fire = fire;
         setImage(SIMPLE_IMAGE_1);
@@ -37,15 +37,12 @@ public class Fygar extends Enemy {
         checkEnemyToFire();
     }
 
-    private void checkEnemyToFire(){
+    private void checkEnemyToFire() {
         Point2D nextPoint = getNextPoint(getGridX(), getGridY(), 1, getDirection());
         int nextGridX = (int) nextPoint.getX();
         int nextGridY = (int) nextPoint.getY();
-        if (!getMap().isGridCoordinateInMap(nextGridX, nextGridY)) {
-            return;
-        }
         Cell cell = getMap().getCell(nextGridX, nextGridY);
-        if (cell.hasObjectType(Digger.class)) {
+        if (cell != null && cell.hasObjectType(Digger.class)) {
             fire.fire(nextGridX, nextGridY, this);
         }
     }

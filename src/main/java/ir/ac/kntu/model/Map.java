@@ -19,7 +19,7 @@ public class Map {
 
     private ExtraSkillObjectController extraSkillObjectController;
 
-    private Level level;
+    private final Level level;
 
     private int enemiesCount;
 
@@ -78,48 +78,66 @@ public class Map {
 
     private void createAllGameObjects(List<Integer>[][] rawMap) {
         cells = new Cell[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Cell cell = new Cell(j, i);
-                cells[i][j] = cell;
-                List<Integer> codes = rawMap[i][j];
-                for (int code : codes) {
-                    GameObject object = createGameObjectByCode(j, i, code);
-                    if (object != null) {
-                        cell.add(object);
-                    }
+        iterateOverMapArray((i, j) -> {
+            Cell cell = new Cell(j, i);
+            cells[i][j] = cell;
+            List<Integer> codes = rawMap[i][j];
+            for (int code : codes) {
+                GameObject object = createGameObjectByCode(j, i, code);
+                if (object != null) {
+                    cell.add(object);
                 }
             }
-        }
+        });
     }
 
     private GameObject createGameObjectByCode(int x, int y, int code) {
         if (GlobalConstants.isCodeOfSoil(code)) {
-            return new Soil(this, x, y, code);
+            return createSoil(x, y, code);
         }
         switch (code) {
             case GlobalConstants.DIGGER:
-                if (digger == null) {
-                    Gun gun = new Gun(this, x, y);
-                    cells[y][x].add(gun);
-                    digger = new Digger(this, x, y, gun);
-                    return digger;
-                }
-                return null;
+                return createDigger(x, y);
             case GlobalConstants.POOKA:
-                enemiesCount++;
-                return new Pooka(this, x, y);
+                return createPooka(x, y);
             case GlobalConstants.FYGAR:
-                enemiesCount++;
-                Fire fire = new Fire(this, x, y);
-                cells[y][x].add(fire);
-                return new Fygar(this, x, y, fire);
+                return createFygar(x, y);
             case GlobalConstants.STONE:
-                return new Stone(this, x, y);
+                return createStone(x, y);
             default:
                 break;
         }
         return null;
+    }
+
+    private Digger createDigger(int x, int y) {
+        if (digger != null) {
+            return null;
+        }
+        Gun gun = new Gun(this, x, y);
+        cells[y][x].add(gun);
+        digger = new Digger(this, x, y, gun);
+        return digger;
+    }
+
+    private Pooka createPooka(int x, int y) {
+        enemiesCount++;
+        return new Pooka(this, x, y);
+    }
+
+    private Fygar createFygar(int x, int y) {
+        enemiesCount++;
+        Fire fire = new Fire(this, x, y);
+        cells[y][x].add(fire);
+        return new Fygar(this, x, y, fire);
+    }
+
+    private Stone createStone(int x, int y) {
+        return new Stone(this, x, y);
+    }
+
+    private Soil createSoil(int x, int y, int code) {
+        return new Soil(this, x, y, code);
     }
 
     public Cell getCell(int x, int y) {
@@ -135,14 +153,12 @@ public class Map {
 
     public List<Point2D> getEmptyPoints() {
         List<Point2D> points = new ArrayList<>();
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Cell cell = cells[i][j];
-                if (cell.isEmpty()) {
-                    points.add(new Point2D(j, i));
-                }
+        iterateOverMapArray((i, j) -> {
+            Cell cell = cells[i][j];
+            if (cell.isEmpty()) {
+                points.add(new Point2D(j, i));
             }
-        }
+        });
         return points;
     }
 
@@ -155,8 +171,7 @@ public class Map {
         digger.attachKeyboardHandlers(pane.getScene());
         extraSkillObjectController = new ExtraSkillObjectController(pane, this);
         extraSkillObjectController.run();
-        getAllObjectsByType(GameObject.class).stream().filter(gameObject -> gameObject instanceof Enemy)
-                .forEach(gameObject -> ((Enemy) gameObject).run());
+        getAllObjectsByType(Enemy.class).forEach(Enemy::run);
     }
 
     public void decrementEnemyCount() {
@@ -173,30 +188,36 @@ public class Map {
 
     private <T> List<T> getAllObjectsByType(Class<T> gameObjectType) {
         List<T> objects = new ArrayList<>();
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                Cell cell = cells[i][j];
-                objects.addAll(cell.getAllObjectsByType(gameObjectType));
-            }
-        }
+        iterateOverMapArray((i, j) -> {
+            Cell cell = cells[i][j];
+            objects.addAll(cell.getAllObjectsByType(gameObjectType));
+        });
         return objects;
     }
 
     public List<Integer>[][] getNumericalMapArray() {
         List<Integer>[][] mapArray = new List[height][width];
+        iterateOverMapArray((i, j) -> {
+            Cell cell = cells[i][j];
+            List<Integer> numericalCodes = new ArrayList<>();
+            for (GameObject object : cell.getGameObjects()) {
+                Integer code = object.getNumericalMapCode();
+                if (code != null) {
+                    numericalCodes.add(code);
+                }
+            }
+            mapArray[i][j] = numericalCodes;
+        });
+        return mapArray;
+    }
+
+    private void iterateOverMapArray(OnMapArrayIteration onMapArrayIteration) {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                Cell cell = cells[i][j];
-                List<Integer> numericalCodes = new ArrayList<>();
-                for (GameObject object : cell.getGameObjects()) {
-                    Integer code =object.getNumericalMapCode();
-                    if (code != null) {
-                        numericalCodes.add(code);
-                    }
+                if (onMapArrayIteration != null) {
+                    onMapArrayIteration.onIteration(i, j);
                 }
-                mapArray[i][j] = numericalCodes;
             }
         }
-        return mapArray;
     }
 }

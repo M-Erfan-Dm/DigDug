@@ -30,7 +30,7 @@ public class Player implements Serializable {
         return totalGamesCount;
     }
 
-    public void incrementTotalGamesCount(){
+    public void incrementTotalGamesCount() {
         totalGamesCount++;
     }
 
@@ -44,10 +44,10 @@ public class Player implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o){
+        if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()){
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         Player player = (Player) o;

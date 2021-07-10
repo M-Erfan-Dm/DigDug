@@ -6,15 +6,12 @@ import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
 import java.util.List;
-import java.util.Random;
 
 public abstract class Enemy extends GameObject implements Movable {
 
     private Timeline movingAnimation;
 
     private Timeline hitAnimation;
-
-    private final Random random;
 
     private boolean canMove = true;
 
@@ -24,11 +21,11 @@ public abstract class Enemy extends GameObject implements Movable {
 
     private OnGameObjectDeathListener onEnemyDeathListener;
 
-    private int totalHealth;
+    private final int totalHealth;
 
     private int curHealth;
 
-    private int score;
+    private final int score;
 
     public Enemy(Map map, int gridX, int gridY, List<String> simpleImagesPath, List<String> deathImagesPath, int totalHealth, int score, Integer numericalMapCode) {
         super(map, gridX, gridY, numericalMapCode);
@@ -37,11 +34,6 @@ public abstract class Enemy extends GameObject implements Movable {
         this.totalHealth = totalHealth;
         this.curHealth = totalHealth;
         this.score = score;
-        random = new Random();
-    }
-
-    public Timeline getMovingAnimation() {
-        return movingAnimation;
     }
 
     public boolean canMove() {
@@ -69,17 +61,7 @@ public abstract class Enemy extends GameObject implements Movable {
             return;
         }
         if (hitAnimation == null) {
-            hitAnimation = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> {
-                alternateImages(deathImagesPath);
-                canMove = false;
-                if (movingAnimation != null) {
-                    movingAnimation.stop();
-                }
-            }), new KeyFrame(Duration.seconds(2)));
-            hitAnimation.setOnFinished(actionEvent -> {
-                curHealth = totalHealth;
-                run();
-            });
+            initHittingAnimation();
         }
         hitAnimation.stop();
         hitAnimation.playFromStart();
@@ -89,31 +71,8 @@ public abstract class Enemy extends GameObject implements Movable {
         getCell().remove(this);
         addScoreToPlayer();
         getMap().decrementEnemyCount();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent ->
-                setImage(deathImagesPath.get(deathImagesPath.size() - 1))),
-                new KeyFrame(Duration.seconds(2)));
         stopMoving();
-        if (hitAnimation != null) {
-            hitAnimation.stop();
-        }
-        if (movingAnimation != null) {
-            movingAnimation.stop();
-        }
-        timeline.play();
-        timeline.setOnFinished(actionEvent -> {
-            hideImageView();
-            if (onEnemyDeathListener != null) {
-                onEnemyDeathListener.onDeath();
-            }
-        });
-    }
-
-    public boolean canEnemyGoToCell(int gridX, int gridY) {
-        if (!getMap().isGridCoordinateInMap(gridX, gridY)) {
-            return false;
-        }
-        Cell cell = getMap().getCell(gridX, gridY);
-        return cell.isEmpty();
+        playDeathAnimation();
     }
 
     @Override
@@ -126,19 +85,18 @@ public abstract class Enemy extends GameObject implements Movable {
         updateViewDirection();
         Point2D curGridPoint = getNextPoint(getGridX(), getGridY(), 1, getDirection());
         setGridCoordinate((int) curGridPoint.getX(), (int) curGridPoint.getY());
-
-        double step = (double) GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
-        movingAnimation = new Timeline(new KeyFrame(Duration.millis(80), actionEvent -> {
-            alternateImages(simpleImagesPath);
-            checkDigger();
-            Point2D point = getNextPoint(getRealX(), getRealY(), step, getDirection());
-            setRealX(point.getX());
-            setRealY(point.getY());
-            checkEnemyEscape();
-        }));
-        movingAnimation.setCycleCount(GlobalConstants.CELL_MOVING_PARTS_COUNT);
+        if (movingAnimation == null) {
+            initMovingAnimation();
+        }
         movingAnimation.play();
-        movingAnimation.setOnFinished(actionEvent -> moveOneCell());
+    }
+
+    public boolean canEnemyGoToCell(int gridX, int gridY) {
+        if (!getMap().isGridCoordinateInMap(gridX, gridY)) {
+            return false;
+        }
+        Cell cell = getMap().getCell(gridX, gridY);
+        return cell.isEmpty();
     }
 
     private void checkDigger() {
@@ -171,5 +129,46 @@ public abstract class Enemy extends GameObject implements Movable {
 
     private void addScoreToPlayer() {
         getMap().getLevel().getGame().incrementScore(score);
+    }
+
+    private void initHittingAnimation() {
+        hitAnimation = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> {
+            alternateImages(deathImagesPath);
+            canMove = false;
+            if (movingAnimation != null) {
+                movingAnimation.stop();
+            }
+        }), new KeyFrame(Duration.seconds(2)));
+        hitAnimation.setOnFinished(actionEvent -> {
+            curHealth = totalHealth;
+            run();
+        });
+    }
+
+    private void initMovingAnimation() {
+        double step = (double) GlobalConstants.CELL_SIZE / GlobalConstants.CELL_MOVING_PARTS_COUNT;
+        movingAnimation = new Timeline(new KeyFrame(Duration.millis(80), actionEvent -> {
+            alternateImages(simpleImagesPath);
+            checkDigger();
+            Point2D point = getNextPoint(getRealX(), getRealY(), step, getDirection());
+            setRealX(point.getX());
+            setRealY(point.getY());
+            checkEnemyEscape();
+        }));
+        movingAnimation.setCycleCount(GlobalConstants.CELL_MOVING_PARTS_COUNT);
+        movingAnimation.setOnFinished(actionEvent -> moveOneCell());
+    }
+
+    private void playDeathAnimation() {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent ->
+                setImage(deathImagesPath.get(deathImagesPath.size() - 1))),
+                new KeyFrame(Duration.seconds(2)));
+        timeline.setOnFinished(actionEvent -> {
+            hideImageView();
+            if (onEnemyDeathListener != null) {
+                onEnemyDeathListener.onDeath();
+            }
+        });
+        timeline.play();
     }
 }

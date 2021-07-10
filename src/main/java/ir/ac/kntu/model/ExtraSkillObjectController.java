@@ -29,7 +29,7 @@ public class ExtraSkillObjectController {
 
     public void run() {
         timer.getKeyFrames().removeAll();
-        timer.getKeyFrames().add(new KeyFrame(Duration.seconds(15),actionEvent -> {
+        timer.getKeyFrames().add(new KeyFrame(Duration.seconds(GlobalConstants.EXTRA_SKILL_OBJECT_DURATION_SEC), actionEvent -> {
             if (extraSkillObject != null) {
                 removeObject();
                 map.getDigger().resetExtraSkills();

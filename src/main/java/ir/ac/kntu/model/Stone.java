@@ -41,28 +41,28 @@ public class Stone extends GameObject implements Movable {
                 setRealY(((int) nextCellPart.getY()));
             }
         }));
-        if (firstFall){
+        if (firstFall) {
             fallDownAnimation.setDelay(Duration.millis(FALL_DOWN_DELAY_MILLISECOND));
         }
         fallDownAnimation.setCycleCount(GlobalConstants.CELL_MOVING_PARTS_COUNT);
-        fallDownAnimation.play();
-        firstFall = false;
         fallDownAnimation.setOnFinished(actionEvent -> {
             setGridY(getGridY() + 1);
             checkDiggerAndEnemies();
             moveOneCell();
         });
+        fallDownAnimation.play();
+        firstFall = false;
     }
 
     @Override
     public void stopMoving() {
-        if (fallDownAnimation!=null){
+        if (fallDownAnimation != null) {
             fallDownAnimation.stop();
         }
     }
 
     private void checkDiggerAndEnemies() {
-        Cell cell = getMap().getCell(getGridX(), getGridY());
+        Cell cell = getCell();
         List<Enemy> enemies = cell.getAllObjectsByType(Enemy.class);
         for (Enemy enemy : enemies) {
             enemy.die();
@@ -74,10 +74,10 @@ public class Stone extends GameObject implements Movable {
     }
 
     private boolean canStoneGoToCell(int gridX, int gridY) {
-        if (!getMap().isGridCoordinateInMap(gridX, gridY)) {
+        Cell cell = getMap().getCell(gridX, gridY);
+        if (cell == null) {
             return false;
         }
-        Cell cell = getMap().getCell(gridX, gridY);
         return cell.isEmpty();
     }
 }

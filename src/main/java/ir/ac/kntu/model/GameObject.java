@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class GameObject {
 
-    private Integer numericalMapCode;
+    private final Integer numericalMapCode;
 
     private final Map map;
 
@@ -36,10 +36,9 @@ public abstract class GameObject {
     }
 
     public void setGridX(int gridX) {
-        getMap().getCell(getGridX(),getGridY()).remove(this);
+        getCell().remove(this);
         this.gridX = gridX;
-        getMap().getCell(getGridX(),getGridY()).add(this);
-
+        getCell().add(this);
     }
 
     public int getGridY() {
@@ -47,16 +46,16 @@ public abstract class GameObject {
     }
 
     public void setGridY(int gridY) {
-        getMap().getCell(getGridX(),getGridY()).remove(this);
+        getCell().remove(this);
         this.gridY = gridY;
-        getMap().getCell(getGridX(),getGridY()).add(this);
+        getCell().add(this);
     }
 
-    public void setGridCoordinate(int gridX, int gridY){
-        getMap().getCell(getGridX(),getGridY()).remove(this);
+    public void setGridCoordinate(int gridX, int gridY) {
+        getCell().remove(this);
         this.gridX = gridX;
         this.gridY = gridY;
-        getMap().getCell(getGridX(),getGridY()).add(this);
+        getCell().add(this);
     }
 
     public Map getMap() {
@@ -83,13 +82,13 @@ public abstract class GameObject {
         this.direction = direction;
     }
 
-    public void updateRealPos(){
-        imageView.setLayoutX(map.getPosition(gridX));
-        imageView.setLayoutY(map.getPosition(gridY));
+    public void updateRealPos() {
+        setRealX(map.getPosition(gridX));
+        setRealY(map.getPosition(gridY));
     }
 
-    public void updateViewDirection(){
-        if (direction!=null) {
+    public void updateViewDirection() {
+        if (direction != null) {
             switch (direction) {
                 case UP:
                     imageView.setScaleX(-1);
@@ -113,18 +112,18 @@ public abstract class GameObject {
         }
     }
 
-    public void setImage(String path){
+    public void setImage(String path) {
         imagePath = path;
         imageView.setImage(new Image(new File(imagePath).toURI().toString(),
-                GlobalConstants.CELL_SIZE, GlobalConstants.CELL_SIZE,false,false));
+                GlobalConstants.CELL_SIZE, GlobalConstants.CELL_SIZE, false, false));
     }
 
-    public Point2D getNextPoint(double startX,double startY,double step,Direction direction){
-        if (direction!=null){
+    public Point2D getNextPoint(double startX, double startY, double step, Direction direction) {
+        if (direction != null) {
             double x;
             double y;
             step = Math.abs(step);
-            switch (direction){
+            switch (direction) {
                 case UP:
                     x = startX;
                     y = startY - step;
@@ -144,51 +143,51 @@ public abstract class GameObject {
                 default:
                     return null;
             }
-            return new Point2D(x,y);
+            return new Point2D(x, y);
         }
         return null;
     }
 
-    public void alternateImages(List<String> images){
-        if (images.size()==0){
+    public void alternateImages(List<String> images) {
+        if (images.size() == 0) {
             return;
         }
         for (int i = 0; i < images.size() - 1; i++) {
             String path = images.get(i);
-            if (getImagePath().equals(path)){
-                setImage(images.get(i+1));
+            if (getImagePath().equals(path)) {
+                setImage(images.get(i + 1));
                 return;
             }
         }
         setImage(images.get(0));
     }
 
-    public void showImageView(){
+    public void showImageView() {
         imageView.setVisible(true);
     }
 
-    public void hideImageView(){
+    public void hideImageView() {
         imageView.setVisible(false);
     }
 
-    public double getRealX(){
+    public double getRealX() {
         return imageView.getLayoutX();
     }
 
-    public void setRealX(double x){
+    public void setRealX(double x) {
         imageView.setLayoutX(x);
     }
 
-    public double getRealY(){
+    public double getRealY() {
         return imageView.getLayoutY();
     }
 
-    public void setRealY(double y){
+    public void setRealY(double y) {
         imageView.setLayoutY(y);
     }
 
-    public Cell getCell(){
-        return map.getCell(gridX,gridY);
+    public Cell getCell() {
+        return map.getCell(gridX, gridY);
     }
 
 }

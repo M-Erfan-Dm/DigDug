@@ -117,4 +117,9 @@ public class Gun extends GameObject implements Movable {
             onGunShootingFinishListener.onFinish();
         }
     }
+
+    public void destroyGun(){
+        getCell().remove(this);
+        stopMoving();
+    }
 }

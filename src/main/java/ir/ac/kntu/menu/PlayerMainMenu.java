@@ -1,13 +1,11 @@
 package ir.ac.kntu.menu;
 
-import ir.ac.kntu.Game;
 import ir.ac.kntu.model.Player;
 import ir.ac.kntu.services.GameSaveInstance;
 import ir.ac.kntu.services.GameSaveInstanceService;
 import ir.ac.kntu.services.PlayersService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
@@ -24,12 +22,11 @@ public class PlayerMainMenu {
 
     private final GameSaveInstanceService saveInstanceService;
 
-    public PlayerMainMenu(Player player, Scene scene, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
+    public PlayerMainMenu(Player player, StackPane root, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
         this.player = player;
         this.playersService = playersService;
         this.saveInstanceService = saveInstanceService;
-        this.root = new StackPane();
-        scene.setRoot(this.root);
+        this.root = root;
         this.root.setPadding(new Insets(50,50,50,50));
         this.root.setBackground(new Background(new BackgroundFill(Color.rgb(240,193,4),
                 CornerRadii.EMPTY,Insets.EMPTY)));
@@ -76,8 +73,7 @@ public class PlayerMainMenu {
         hBox.setSpacing(50);
         hBox.setAlignment(Pos.BOTTOM_CENTER);
         root.getChildren().add(hBox);
-        GameSaveInstance instance = saveInstanceService.getInstanceByPlayer(player);
-        if (instance==null){
+        if (!saveInstanceService.containsByPlayer(player)){
             continueGameButton.setDisable(true);
         }
     }
@@ -95,15 +91,16 @@ public class PlayerMainMenu {
 
     private void startNewGame(){
         prepareStartingGame();
-        Game game = new Game(root.getScene(),player, playersService, saveInstanceService);
-        game.start();
+        saveInstanceService.remove(player);
+        GameMenu gameMenu = new GameMenu(root.getScene(),player, playersService, saveInstanceService);
+        gameMenu.start();
     }
 
     private void continueGame(){
         prepareStartingGame();
         GameSaveInstance gameSaveInstance = saveInstanceService.getInstanceByPlayer(player);
-        Game game = new Game(root.getScene(),gameSaveInstance,playersService,saveInstanceService);
-        game.start();
+        GameMenu gameMenu = new GameMenu(root.getScene(),gameSaveInstance,playersService,saveInstanceService);
+        gameMenu.start();
     }
 
     private void incrementPlayedGamesCount(){

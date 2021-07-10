@@ -9,7 +9,7 @@ import javafx.geometry.Point2D;
 import java.util.*;
 
 public class EnemyAIService {
-    Random random;
+    private final Random random;
 
     public EnemyAIService() {
         random = new Random();

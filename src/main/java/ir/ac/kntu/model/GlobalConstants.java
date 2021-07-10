@@ -1,5 +1,7 @@
 package ir.ac.kntu.model;
 
+import java.time.LocalTime;
+
 public class GlobalConstants {
 
     public static final int EMPTY = 0;
@@ -30,9 +32,13 @@ public class GlobalConstants {
 
     public static final int FYGAR_SCORE = 1000;
 
-    public static final int LEVEL_TIME_MIN = 3;
+    public static final int LEVEL_FINISH_SCORE = 1200;
 
-    public static final int TOTAL_MAPS = 2;
+    public static final LocalTime LEVEL_TIME = LocalTime.of(0,3,0);
+
+    public static final LocalTime LEVEL_WARNING_TIME = LocalTime.of(0,1,0);
+
+    public static final int TOTAL_MAPS = 4;
 
     public static final int SCENE_WIDTH = 1000;
 

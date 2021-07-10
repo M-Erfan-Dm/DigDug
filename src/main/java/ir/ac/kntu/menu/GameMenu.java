@@ -1,7 +1,5 @@
-package ir.ac.kntu;
+package ir.ac.kntu.menu;
 
-import ir.ac.kntu.menu.GameInfoSideLayout;
-import ir.ac.kntu.menu.PlayerMainMenu;
 import ir.ac.kntu.model.GlobalConstants;
 import ir.ac.kntu.model.Level;
 import ir.ac.kntu.model.Player;
@@ -14,9 +12,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-public class Game {
+public class GameMenu {
 
-    private Pane root;
+    private final Pane root;
 
     private final Player player;
 
@@ -32,7 +30,7 @@ public class Game {
 
     private final GameSaveInstanceService saveInstanceService;
 
-    public Game(Scene scene, Player player, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
+    public GameMenu(Scene scene, Player player, PlayersService playersService, GameSaveInstanceService saveInstanceService) {
         this.playersService = playersService;
         this.saveInstanceService = saveInstanceService;
         root = new HBox();
@@ -42,8 +40,8 @@ public class Game {
         initGameInfoSideLayout();
     }
 
-    public Game(Scene scene, GameSaveInstance gameSaveInstance, PlayersService playersService,
-                GameSaveInstanceService saveInstanceService) {
+    public GameMenu(Scene scene, GameSaveInstance gameSaveInstance, PlayersService playersService,
+                    GameSaveInstanceService saveInstanceService) {
         this(scene, gameSaveInstance.getPlayer(), playersService, saveInstanceService);
         health = gameSaveInstance.getHealth();
         score = gameSaveInstance.getScore();
@@ -116,7 +114,7 @@ public class Game {
         Pane mapPane = new Pane();
         level = new Level(this, mapPane, mapNumber);
         root.getChildren().add(0, mapPane);
-        updateTime(GlobalConstants.LEVEL_TIME_MIN, 0);
+        updateTime(GlobalConstants.LEVEL_TIME.getMinute(), GlobalConstants.LEVEL_TIME.getSecond());
         level.run();
     }
 
@@ -153,7 +151,9 @@ public class Game {
 
     private void goToPlayerMainMenu() {
         root.getChildren().clear();
-        PlayerMainMenu playerMainMenu = new PlayerMainMenu(player, root.getScene(), playersService, saveInstanceService);
+        StackPane stackPane = new StackPane();
+        root.getScene().setRoot(stackPane);
+        PlayerMainMenu playerMainMenu = new PlayerMainMenu(player, stackPane, playersService, saveInstanceService);
         playerMainMenu.show();
     }
 
@@ -161,7 +161,7 @@ public class Game {
         Pane mapPane = new Pane();
         level = new Level(this, mapPane, gameSaveInstance);
         root.getChildren().add(0, mapPane);
-        updateTime(GlobalConstants.LEVEL_TIME_MIN, 0);
+        updateTime(GlobalConstants.LEVEL_TIME.getMinute(), GlobalConstants.LEVEL_TIME.getSecond());
     }
 
     private void save(){

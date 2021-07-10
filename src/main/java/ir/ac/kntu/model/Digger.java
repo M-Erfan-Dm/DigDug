@@ -2,7 +2,6 @@ package ir.ac.kntu.model;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
@@ -32,11 +31,11 @@ public class Digger extends GameObject implements Movable {
 
     private static final String DEATH_IMAGE_5 = "src/main/resources/assets/digger_death5.png";
 
-    private static final List<String> simpleImagesPath = Arrays.asList(SIMPLE_IMAGE_1,SIMPLE_IMAGE_2);
+    private static final List<String> SIMPLE_IMAGES_PATH = Arrays.asList(SIMPLE_IMAGE_1,SIMPLE_IMAGE_2);
 
-    private static final List<String> deathImagesPath =  Arrays.asList(DEATH_IMAGE_1, DEATH_IMAGE_2, DEATH_IMAGE_3, DEATH_IMAGE_4, DEATH_IMAGE_5);
+    private static final List<String> DEATH_IMAGES_PATH =  Arrays.asList(DEATH_IMAGE_1, DEATH_IMAGE_2, DEATH_IMAGE_3, DEATH_IMAGE_4, DEATH_IMAGE_5);
 
-    private static final List<String> diggingImagesPath = Arrays.asList(DIGGING_IMAGE_1,DIGGING_IMAGE_2);
+    private static final List<String> DIGGING_IMAGES_PATH = Arrays.asList(DIGGING_IMAGE_1,DIGGING_IMAGE_2);
 
     private static final double NORMAL_VELOCITY_MILLISECOND = 39;
 
@@ -127,7 +126,7 @@ public class Digger extends GameObject implements Movable {
     }
 
     private void simpleMove() {
-        defaultMove(simpleImagesPath);
+        defaultMove(SIMPLE_IMAGES_PATH);
     }
 
     private boolean isDiggingMove(int nextGridX, int nextGridY) {
@@ -136,7 +135,7 @@ public class Digger extends GameObject implements Movable {
     }
 
     private void diggingMove() {
-        defaultMove(diggingImagesPath);
+        defaultMove(DIGGING_IMAGES_PATH);
         Cell cell = getCell();
         Soil soil = cell.getFirstObjectByType(Soil.class);
         if (soil != null) {
@@ -184,8 +183,9 @@ public class Digger extends GameObject implements Movable {
     public void die() {
         getCell().remove(this);
         stopMoving();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> alternateImages(deathImagesPath)),new KeyFrame(Duration.millis(250)));
-        timeline.setCycleCount(deathImagesPath.size());
+        gun.destroyGun();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> alternateImages(DEATH_IMAGES_PATH)),new KeyFrame(Duration.millis(250)));
+        timeline.setCycleCount(DEATH_IMAGES_PATH.size());
         timeline.play();
         timeline.setOnFinished(actionEvent -> {
             hideImageView();
@@ -195,6 +195,7 @@ public class Digger extends GameObject implements Movable {
             getMap().getLevel().finish(LevelState.LOSE);
         });
     }
+
     private void checkObjects(){
         checkStone();
         checkExtraSkillObject();

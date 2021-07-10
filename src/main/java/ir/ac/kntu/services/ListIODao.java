@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface ListIODao<T> {
     void save(List<T> objects);
+
     List<T> load();
 }

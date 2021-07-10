@@ -100,8 +100,8 @@ public class SignupMenu {
     }
 
     private void signup() {
-        String username = usernameTextField.getText();
-        String password = passwordTextField.getText();
+        String username = usernameTextField.getText().trim();
+        String password = passwordTextField.getText().trim();
         if (username.isBlank() || password.isBlank()) {
             messageLabel.setText("Invalid data");
             return;

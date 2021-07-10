@@ -14,9 +14,9 @@ public class CountDownTimer {
 
     private OnTimerTickListener onTimerTickListener;
 
-    private OnTimerStartListener onTimerStartListener;
-
     private boolean canRestart = true;
+
+    private boolean stop = false;
 
     private int initialDelaySeconds;
 
@@ -36,10 +36,6 @@ public class CountDownTimer {
         this.onTimerTickListener = onTimerTickListener;
     }
 
-    public void setOnTimerStartListener(OnTimerStartListener onTimerStartListener) {
-        this.onTimerStartListener = onTimerStartListener;
-    }
-
     public void setInitialDelaySeconds(int initialDelaySeconds) {
         this.initialDelaySeconds = initialDelaySeconds;
     }
@@ -49,27 +45,28 @@ public class CountDownTimer {
             return;
         }
         thread = new Thread(() -> {
+            if (stop){
+                return;
+            }
             canRestart = false;
             initialDelay();
-            Platform.runLater(() -> {
-                if (onTimerStartListener != null) {
-                    onTimerStartListener.onStart();
-                }
-            });
             int totalSeconds = convertTimeToSeconds(minute, second);
             for (int i = totalSeconds; i >= 0; i--) {
+                if (stop){
+                    return;
+                }
                 try {
                     tick(i);
                 } catch (InterruptedException e) {
                     return;
                 }
             }
+            canRestart = true;
             Platform.runLater(() -> {
                 if (onTimerFinishListener != null) {
                     onTimerFinishListener.onFinish();
                 }
             });
-            canRestart = true;
         });
         thread.start();
     }
@@ -77,8 +74,8 @@ public class CountDownTimer {
     public void stop(){
         if (!thread.isInterrupted()){
             thread.interrupt();
-            canRestart = true;
         }
+        stop = true;
     }
 
     private int convertTimeToSeconds(int minute, int second) {

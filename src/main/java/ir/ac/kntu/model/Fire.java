@@ -11,7 +11,7 @@ public class Fire extends GameObject implements Movable{
 
     private Fygar fygar;
 
-    Timeline firingAnimation;
+    private Timeline firingAnimation;
 
     public Fire(Map map, int gridX, int gridY) {
         super(map, gridX, gridY, null);
@@ -40,7 +40,6 @@ public class Fire extends GameObject implements Movable{
         Digger digger = cell.getFirstObjectByType(Digger.class);
         if (digger != null) {
             digger.die();
-            hideImageView();
         }
     }
 

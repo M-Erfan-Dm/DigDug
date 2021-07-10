@@ -1,0 +1,7 @@
+.button{
+    -fx-background-color: #02fb02;
+    -fx-text-fill: #FFFFFF;
+}
+.button:pressed{
+    -fx-background-color: #fba002;
+}

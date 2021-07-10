@@ -149,7 +149,8 @@ public class GameInfoSideLayout {
 
     private void initSaveButton() {
         saveButton = new Button("Save Game");
-        saveButton.setStyle("-fx-background-color: #2de911;-fx-text-fill: #FFFFFF");
+        saveButton.getStylesheets().add(new File(
+                "src/main/java/ir/ac/kntu/style/SaveButton.css").toURI().toString());
         saveButton.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
             if (canSaveGame) {
                 if (onSaveButtonClick != null) {

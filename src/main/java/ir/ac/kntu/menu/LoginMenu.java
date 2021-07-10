@@ -12,12 +12,11 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.util.Stack;
 
 public class LoginMenu {
     private Stage stage;
 
-    StackPane root;
+    private StackPane root;
 
     private Label usernameLabel;
 
@@ -90,8 +89,8 @@ public class LoginMenu {
     }
 
     private void login() {
-        String username = usernameTextField.getText();
-        String password = passwordTextField.getText();
+        String username = usernameTextField.getText().trim();
+        String password = passwordTextField.getText().trim();
         if (username.isBlank() || password.isBlank()){
             messageLabel.setText("Invalid data");
             return;

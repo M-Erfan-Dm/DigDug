@@ -162,7 +162,7 @@ public abstract class Enemy extends GameObject implements Movable {
     }
 
     private void checkEnemyEscape() {
-        if (getMap().canEnemiesEscape() && getGridX() == 0) {
+        if (getMap().canEnemiesEscape() && getGridX() == 0 && getGridY() == 0) {
             hideImageView();
             movingAnimation.stop();
             getMap().getLevel().finish(LevelState.LOSE);

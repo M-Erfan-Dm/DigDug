@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ir.ac.kntu</groupId>
-    <artifactId>p4-digdug</artifactId>
-    <name>p4-digdug</name>
+    <artifactId>DigDug</artifactId>
+    <name>Dig Dug</name>
     <version>1.0</version>
     <packaging>jar</packaging>
     
@@ -102,7 +102,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.6</version>
                 <configuration>
-                    <release>${maven.compiler.release}</release>
+<!--                    <release>${maven.compiler.release}</release>-->
                     <jlinkImageName>hellofx</jlinkImageName>
                     <launcher>hellofx</launcher>
                     <mainClass>ir.ac.kntu.JavaFxApplication</mainClass>
